@@ -1,0 +1,194 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/templates/cimaTemplate.xhtml">
+	<ui:define name="tituloPagina">
+		<h:outputText value=".::Usuarios::." />
+	</ui:define>
+
+	<ui:define name="tituloFormulario">
+		<h:outputText value="Usuarios" />
+	</ui:define>
+
+
+	<ui:define name="contenido">
+	<h:form id="frm1" action="frm1" method="post" onkeypress=" if (event.keyCode == 13) { return false; }">	
+	
+           <p:remoteCommand name="onload" action="#{facUsuarioControlador.CargarDatos}" autorun="true" update="datosUsuario,listasUsuarios"  />
+			<p:growl id="growl" showDetail="true" />  
+
+	 <p:panel id="datosUsuario">
+	   	<p align="center"> 
+			<h:outputText value="Ingreso de Usuario" styleClass="titulo" />
+		</p>
+		<h:panelGrid columns="2" title="Mantenimiento de Usuarios" >
+
+			<h:outputText value="Tipo Usuario" styleClass="label"/>
+			<p:selectOneMenu id="TipoUSuario" value="#{facUsuarioControlador.tipoUsuario}" disabled="#{facUsuarioControlador.grisadoModificar}"  styleClass="text">
+			  	<f:selectItems value="#{facUsuarioControlador.li_tipo}" />
+			  		<p:ajax event="change" listener="#{facUsuarioControlador.activarBtnUsuario()}"  update=":frm1:panelUsuario,:frm1:RucEmpresa,:frm1:TipoUSuario" />
+			</p:selectOneMenu>
+				
+			<h:outputText value="Ruc Empresa:" styleClass="label"/>		
+			<p:selectOneMenu id="RucEmpresa" value="#{facUsuarioControlador.rucUsuario}" disabled="#{facUsuarioControlador.grisadoModificar}" styleClass="text">
+			  	<f:selectItem itemLabel="Selecionar Empresa" itemValue="0" />
+			  	<f:selectItems value="#{facUsuarioControlador.li_ruc}" ></f:selectItems>
+			  	<p:ajax event="change" listener="#{facUsuarioControlador.activarBtnUsuario()}" update=":frm1:panelUsuario,:frm1:RucEmpresa,:frm1:TipoUSuario" />
+			</p:selectOneMenu>
+				  										
+			<h:outputText value="Identificación del usuario" styleClass="label"/>				
+			<h:panelGroup id="panelUsuario">
+				<p:inputText id="txtRucUsuario" value="#{facUsuarioControlador.rucEmpresa}" disabled="#{facUsuarioControlador.grisadoCodUsuario}" styleClass="text">
+				</p:inputText>
+				<p:commandButton actionListener="#{facUsuarioControlador.llenarIndentificacionUsuario()}" icon="ui-icon-circle-zoomin"	oncomplete="if(#{facUsuarioControlador.grisadoCodUsuario}){ diaUsu.show() }else{ diaUsu.hide()  }" 
+					disabled="#{facUsuarioControlador.grisado}" update=":formdialog:estId,:frm1:growl,:frm1:datosUsuario,:frm1:listasUsuarios"></p:commandButton>
+						    
+			</h:panelGroup>
+				
+				
+			<h:outputText value="Codigo Rol:" styleClass="label"/>	
+			<p:selectOneMenu value="#{facUsuarioControlador.rol}" styleClass="text" >
+			  	<f:selectItems value="#{facUsuarioControlador.li_rol}"></f:selectItems>
+			</p:selectOneMenu>
+				  
+				
+			<h:outputText value="Password :" styleClass="label"/>
+			<h:inputSecret id="txtpassword" value="#{facUsuarioControlador.password}" redisplay="true" />
+				 
+				
+			<h:outputText value="Estado de Usuario: " styleClass="label"/>
+			<p:selectOneMenu value="#{facUsuarioControlador.estado}" styleClass="text" >
+				<f:selectItems value="#{facUsuarioControlador.li_estado}"></f:selectItems>
+			</p:selectOneMenu>		
+				
+			<p:commandButton value="Guardar" icon="ui-icon-disk" oncomplete="confirmation.show()" />
+			<p:commandButton value="Limpiar" icon="ui-icon-arrowrefresh-1-e" action="#{facUsuarioControlador.CargarDatos()}" update=":frm1:datosUsuario,:frm1:listasUsuarios" />
+          </h:panelGrid>
+     </p:panel>
+      
+				
+          <p:panel id="listasUsuarios">
+          
+					<p:dataTable var="Usuario" value="#{facUsuarioControlador.listaUsario}" filteredValue="#{facUsuarioControlador.filtarCliente}" resizableColumns="true" liveResize="true"
+						paginator="true"
+						rows="10"  
+                        paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+                        rowsPerPageTemplate="5,10,15" rowStyleClass="fila1">
+						<f:facet name="header">  
+		            	<h:outputText value="Consulta de Usuario"  styleClass="cabeceraTabla"/>	 
+		        		</f:facet>				
+						<p:column style="width:13%" >
+							<f:facet name="header">
+								<h:outputText value="Ruc Empresa" />
+							</f:facet>
+		                    <h:outputText value="#{Usuario.id.ruc}" /> 
+					    </p:column>
+						<p:column >
+							<f:facet name="header">
+								<h:outputText value="Codigo de Usuario" />
+							</f:facet>
+		              <h:outputText value="#{Usuario.id.codUsuario}" />						
+   		             </p:column>
+					<p:column style="width:45%">
+							<f:facet name="header">
+								<h:outputText value="Razón Social" />
+							</f:facet>
+  		               <h:outputText value="#{Usuario.nombre}" />						
+  		           </p:column>
+  		           
+					<p:column style="width:9%" >
+							<f:facet name="header">
+								<h:outputText value="Tipo de Usuario" />
+							</f:facet>
+							<p align="center">
+     		          			<h:outputText value="#{Usuario.tipoUsuario}" />
+	   	            		</p>
+	   	            </p:column>
+	   	            <p:column style="width:8%">
+							<f:facet name="header">
+									<h:outputText value="Estado" />
+													
+							</f:facet>
+							<p align="center"> 
+ 		    		          <h:outputText value="#{Usuario.isActive}" />
+     						</p>
+     		          </p:column>
+	   	            <p:column>
+							<f:facet name="header">
+								<h:outputText value="Identificación del usuario" />
+							</f:facet>
+     		          <h:outputText value="#{Usuario.rucEmpresa}" />
+	   	            </p:column>
+	   	            
+	   	            <p:column>
+                       <f:facet name="header">
+                           <h:outputText value="Acción" />
+                           </f:facet>
+                           <h:panelGrid columns="2">
+	                          <p:commandButton icon="ui-icon-document" title="Modificar" 
+	                          			action="#{facUsuarioControlador.modificar}" update=":frm1:datosUsuario,:frm1:txtRucUsuario">
+			                          <f:setPropertyActionListener target="#{facUsuarioControlador.camposModificar}"
+											value="#{Usuario}" />
+							  </p:commandButton>
+	
+	                          <p:commandButton icon="ui-icon-trash" title="Borrar" 
+	                             	action="#{facUsuarioControlador.BorrarLiniea()}" update=":frm1:listasUsuarios">
+							  		<f:setPropertyActionListener target="#{facUsuarioControlador.seleccionarCampo}" value="#{Usuario}" />
+							  </p:commandButton>
+						  </h:panelGrid>
+                           </p:column>
+					</p:dataTable>
+				</p:panel>
+		</h:form>
+	</ui:define>
+	<ui:define name="dialogo">
+		<h:form id="formdialog">
+			<p:dialog visible="#{facUsuarioControlador.requerido}" header="Usuario" widgetVar="diaUsu" id="estId" resizable="false" modal="true">
+				<p:panel visible="#{facUsuarioControlador.requerido}" id="pDialogo">
+					<p:dataTable id="taUsu" var="cliente" 
+						value="#{facUsuarioControlador.listaCliente}"
+						widgetVar="estTa" rowStyleClass="fila1"
+						filteredValue="#{facUsuarioControlador.filtarCliente}"
+						styleClass="tabla">
+						<p:column headerText="Identificación" style="width:10%"
+							filterBy="#{cliente.id.rucCliente}">
+							<h:outputText value="#{cliente.id.rucCliente}"/>
+						</p:column>
+						<p:column headerText="Nombre" style="width:60%"
+							filterBy="#{cliente.razonSocial}">
+							<h:outputText value="#{cliente.razonSocial}"/>
+						</p:column>
+						<p:column headerText="Seleccionar"  style="width:3%">
+							<p:commandButton icon="ui-icon-check"
+								oncomplete="diaUsu.hide()" 
+								action="#{facUsuarioControlador.ubicarIdenUsuario()}"
+								update=":frm1:txtRucUsuario,:frm1:growl,:frm1:datosUsuario,:frm1:listasUsuarios">
+								<f:setPropertyActionListener
+									target="#{facUsuarioControlador.selecionarClientes}"
+									value="#{cliente}"></f:setPropertyActionListener>
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>
+				</p:panel>
+			</p:dialog>	
+		</h:form>
+		<p:dialog header="Mensaje de confirmacion"  widgetVar="confirmation" id="mensajeConfirmacion" modal="true">
+	    	<p:panel id="blodialog">
+		    	<h:outputLabel value="Esta seguro que desea realizar los cambios?"/><br/>
+		    	<h:panelGroup style=" font-size: 1.1em;font-weight:400; display: block; text-align: center;padding: 10px;">
+			    	<p:commandButton value="Si" oncomplete="confirmation.hide(),bloquearPagina.hide()" onstart="bloquearPagina.show()" action="#{facUsuarioControlador.inserto('guardar')}" update=":frm1:datosUsuario,:frm1:listasUsuarios,:frm1:growl" />  
+				    <p:commandButton value="No" oncomplete="confirmation.hide()"/>    
+					<p:blockUI block="blodialog" widgetVar="bloquearPagina">  
+					       Actualizando Registro...<br />  
+						<p:graphicImage value="/imagenes/ajax-loader.gif"/>  
+					</p:blockUI>
+				</h:panelGroup>
+			</p:panel>
+		</p:dialog>
+	</ui:define>
+</ui:composition>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/templates/cimaTemplate.xhtml">
+	<ui:define name="tituloPagina">
+		<h:outputText value="Mantenimiento de Usuarios" />
+	</ui:define>
+	<ui:define name="tituloFormulario">
+	</ui:define>
+	<ui:define name="contenido">
+		<h:form id="formaPrimero">
+			<p:growl autoUpdate="true" />
+			<p:panel id="panel" header="USUARIOS">
+				<p:commandButton action="#{controladorUsuario.AcualizarUsuario()}"
+					value="Actualizar" update="@form" />
+
+				<p:commandButton value="Agregar" onclick="dlg1.show()"
+					update=":formasegundo:p2" />
+
+				<p:dataTable id="idDataTable" var="Usu"
+					value="#{controladorUsuario.usuarios}">
+					<p:column headerText="Codigo">
+						<h:outputText value="#{Usu.codigo}" />
+					</p:column>
+					<p:column headerText="Login">
+						<h:outputText value="#{Usu.login}" />
+					</p:column>
+					<p:column headerText="Password">
+						<h:outputText value="#{Usu.password}" />
+					</p:column>
+
+					<p:column>
+						<p:commandButton value="Seleccionar" update="@form"
+							process="@this">
+							<f:setPropertyActionListener
+								target="#{controladorUsuario.usuario}" value="#{Usu}" />
+						</p:commandButton>
+					</p:column>
+
+					<p:column>
+						<p:commandButton value="Eliminar" onclick="dlg1.show()"
+							process="@this">
+
+							<f:setPropertyActionListener value="#{Usu}"
+								target="#{controladorUsuario.usuario}" />
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+			</p:panel>
+		</h:form>
+
+	</ui:define>
+	<ui:define name="autor">
+		<h:outputText value="Katty M." />
+	</ui:define>
+
+	<ui:define name="dialogo">
+		<h:form id="formasegundo">
+			<p:panelGrid id="idPanel" columns="2">
+				<p:dialog id="dialogo1" modal="true" header="Confirmacion"
+					widgetVar="dlg1">
+					<p:panel id="p2">
+						<p:commandButton value="Agregar" onclick="dlg1.show()"
+							action="#{controladorUsuario.agregarUsuario()}"
+							update=":formasegundo:p2" />
+						<p:commandButton value="Cancelar" onclick="dlg1.hide()" />
+						<h:outputText value="Codigo:" />
+						<h:inputText value="#{controladorUsuario.usuario.codigo}" />
+						<h:outputText value="Login" />
+
+						<h:inputText value="#{controladorUsuario.usuario.login}"
+							id="txtcodig" required="true"
+							requiredMessage="Debe ingresar el código" />
+						<h:outputText value="Password" />
+						<h:inputText value="#{controladorUsuario.usuario.password}" />
+					</p:panel>
+				</p:dialog>
+			</p:panelGrid>
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>
+</html>

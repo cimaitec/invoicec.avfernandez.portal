@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/templates/clearTemplate.xhtml">
+	<ui:define name="tituloPagina">
+		<h:outputText value="Autor" />
+	</ui:define>
+
+	<ui:define name="tituloFormulario">
+	</ui:define>
+
+
+	<ui:define name="contenido">
+		<h:form id="frm1">
+
+
+			<p:panel header="Ingreso">
+				<h:panelGrid columns="3">
+					<h:outputText value="Usuario" />
+					<p:inputText value="#{loginControlador.usuario.login}"
+						required="true" requiredMessage="Debe ingresar Usuario"
+						id="txtUsuario" />
+					<p:message for="txtUsuario" />
+					<h:outputText value="Password:" />
+					<p:inputText 
+					value="#{loginControlador.usuario.password}" 
+					id="txtPassword" />
+					<p:message for="txtPassword" />
+				</h:panelGrid>
+
+				<p:commandButton value="Ingresar"
+					action="#{loginControlador.validarLogin()}" update="@form" ajax="false"/>
+			</p:panel>
+			<p:message for="frm1"/>
+		</h:form>
+
+	</ui:define>
+
+	<ui:define name="autor"></ui:define>
+
+</ui:composition>
+
+</html>

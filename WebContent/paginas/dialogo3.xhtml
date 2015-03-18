@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+	<ui:composition template="/templates/clearTemplate.xhtml">
+		<ui:define name="tituloPagina">
+			<h:outputText value="FORMULARIO CLIENTE" />
+		</ui:define>
+		<ui:define name="paginaformulario">
+			<h:outputText value="FORMULARIO CLIENTE" />
+		</ui:define>
+		<ui:define name="contenido">
+			<h:form id="frm1">
+				<p:panel id="panel1">
+					<p:panelGrid columns="2">
+						<p:commandButton value="Nuevo" onclick="dlg2.show()" update=":frm2:panel2"/>
+					</p:panelGrid>
+					<p:dataTable value="#{clienteControlador.cli}" var="cl">
+						<p:column>
+							<h:outputText value="#{cl.codigoC}" />
+						</p:column>
+						<p:column>
+							<h:outputText value="#{cl.cedula}" />
+						</p:column>
+						<p:column>
+							<h:outputText value="#{cl.nombre}" />
+						</p:column>
+						<p:column>
+							<h:outputText value="#{cl.apellido}" />
+						</p:column>
+						<p:column>
+							<h:outputText value="#{cl.direccion}" />
+						</p:column>
+						<p:column>
+							<h:outputText value="#{cl.nacionalidad.nombre}" />
+						</p:column>
+						<p:column>
+							<p:commandButton value="Seleccionar" update=":frm1:panel1" process="@this">
+								<f:setPropertyActionListener target="#{clienteControlador.cliente}" value="#{cl}" />
+								<f:setPropertyActionListener target="#{clienteControlador.valorelegido}" value="#{cl.nacionalidad.id}" />
+							</p:commandButton>
+						</p:column>
+						<p:column>
+							<p:commandButton value="Eliminar" onclick="dlg1.show()" process="@this">
+								<f:setPropertyActionListener target="#{clienteControlador.cliente}" value="#{cl}" />
+							</p:commandButton>
+							<p:dialog id="dialogo1" header="Eliminar" modal="true" widgetVar="dlg1">
+								<h:outputText value="¿Estas seguro que deseas eliminar el registro?" />
+								<p:commandButton action="#{clienteControlador.eliminar()}" value="Aceptar" onclick="dlg1.hide()" update=":frm1:panel1" process="@this" />
+								<p:commandButton value="Cancelar" onclick="dlg1.hide()"/>
+							</p:dialog>
+						</p:column>
+					</p:dataTable>
+				</p:panel>
+			</h:form>
+			<h:form id="frm2">
+				<p:dialog id="dialogo2" header="Mi Dialogo" widgetVar="dlg2">
+					<p:panel id="panel2" header="PANEL PRIME">
+						<p:growl autoUpdate="true"/>
+						<h:panelGrid columns="2">
+							<h:outputText value="Codigo: " />
+							<p:inputText value="#{clienteControlador.cliente.codigoC}" />
+							<h:outputText value="Cedula: " />
+							<p:inputText value="#{clienteControlador.cliente.cedula}" required="true" requiredMessage="No ingreso la cedula"/>
+							<h:outputText value="Nombre: " />
+							<p:inputText value="#{clienteControlador.cliente.nombre}" required="true" requiredMessage="No ingreso el nombre"/>
+							<h:outputText value="Apellido: " />
+							<p:inputText value="#{clienteControlador.cliente.apellido}" required="true" requiredMessage="No ingreso el apellido"/>
+							<h:outputText value="Direccion: " />
+							<p:inputText value="#{clienteControlador.cliente.direccion}" required="true" requiredMessage="No ingreso la direccion"/>
+							<h:outputText value="Nacionalidad: " />
+							<p:selectOneMenu value="#{clienteControlador.valorelegido}">
+								<f:selectItem itemLabel="seleccione una" itemValue="-1" />
+								<f:selectItems value="#{clienteControlador.nac}" var="cli"
+									itemLabel="#{cli.nombre}" itemValue="#{cli.id}" />
+							</p:selectOneMenu>
+							<p:commandButton action="#{clienteControlador.insertar()}" value="INSERTAR" update=":frm1:panel1" onclick="dlg2.hide()" />
+							<p:commandButton action="#{clienteControlador.actualizar()}" value="ACTUALIZAR" update=":frm1:panel1" onclick="dlg2.hide()"/>
+						</h:panelGrid>
+					</p:panel>
+				</p:dialog>
+			</h:form>
+		</ui:define>
+		<ui:define name="autor">
+			<h:outputText value="Grupo 2 - Bolivar Salazar" />
+		</ui:define>
+	</ui:composition>
+</html>

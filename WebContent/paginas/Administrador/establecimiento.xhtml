@@ -1,0 +1,156 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<ui:composition template="/templates/cimaTemplate.xhtml">
+	<ui:define name="tituloPagina">
+		<h:outputText value=".::Establecimientos::." />
+	</ui:define>
+	<ui:define name="tituloFormulario">
+		<h3 style="margin-top:0">Establecimientos</h3>
+	</ui:define>
+	<ui:define name="contenido">
+		<h:form id="frm1" action="frm1" method="post" onkeypress=" if (event.keyCode == 13) { return false; }">
+		 <p:remoteCommand process="@this" name="onload"  action="#{facEstablecimientoControlador.cargarDatos}" autorun="true" 
+		 update=":frm1:GridEstablecimiento,:frm1:listaEstablecimiento" />
+		<p:growl id="growl" showDetail="true" sticky="true" /> 
+			<p:panel id="datosEstablecimiento" header="Datos del Establecimiento" menuTitle="Ingreso del Establecimiento" style="margin-bottom:10px;">
+				<h3 align="center" class="title ui-widget-header ui-corner-all">Ingreso del Establecimiento</h3>
+				<h:panelGrid id="GridEstablecimiento" columns="2" title="Establecimiento">
+					<h:outputText value="Ruc Empresa" styleClass="label"/>
+					<p:selectOneMenu  value="#{facEstablecimientoControlador.ruc}" disabled="#{facEstablecimientoControlador.grisado}">
+						<f:selectItems value ="#{facEstablecimientoControlador.itemsRuc}">
+						</f:selectItems>
+						<!--  <p:ajax event="click" value="#{facEstablecimientoControlador.ruc}" update=":frm1:growl"/>-->
+					</p:selectOneMenu>
+					<h:outputText value="Codigo Establecimiento: " styleClass="label"/>
+					<h:panelGrid columns="3"  title="Establecimiento"  >
+						<h:panelGroup>
+							<h:inputText id="txtCodEst" value="#{facEstablecimientoControlador.codEstablecimiento}"  maxlength="3" disabled="#{facEstablecimientoControlador.grisado}" >
+								<p:ajax event="blur" listener="#{facEstablecimientoControlador.validarEstablecimiento}"  update=":frm1:growl"/>
+							</h:inputText>
+							<h:outputText value="*" style="color: #FF0000;"/>
+						</h:panelGroup>
+						<br />
+						<h:outputText value=" ejemplo: 001,002,045" styleClass="label" />
+					</h:panelGrid>
+					<h:outputText value="Dirección de Establecimiento" styleClass="label"/>
+					<h:panelGroup>
+						<h:inputTextarea value="#{facEstablecimientoControlador.direccionEstablecimiento}"  rows="3" cols="50"  maxlength="300" />
+						<h:outputText value="*" style="color: #FF0000;"/>
+					</h:panelGroup>
+					<h:outputText value="Correo Electronico" styleClass="label"/>
+					<h:panelGroup>
+						<h:inputText value="#{facEstablecimientoControlador.correo}" title="alguien@example.com" style=" width : 300px;"  >
+						</h:inputText>
+						<h:outputText value="*" style="color: #FF0000;"/>
+					</h:panelGroup>
+					<h:outputText value="Mensajes" styleClass="label"/>
+					<h:inputTextarea value="#{facEstablecimientoControlador.mensaje}" rows="3" cols="50"  />
+					<h:outputText value="Local" styleClass="label"  />
+					<h:inputTextarea value="#{facEstablecimientoControlador.local}" maxlength="20" />
+					<h:outputText value="Telefono" styleClass="label"  />
+					<h:inputTextarea value="#{facEstablecimientoControlador.telefonoEstablecimiento}" maxlength="200" />
+					<h:outputText value="Activo" styleClass="label"/>
+					<p:selectBooleanCheckbox value="#{facEstablecimientoControlador.active}" >
+					</p:selectBooleanCheckbox>
+					<h:panelGrid columns="4" title="DETALLE" style="align:CENTER"> 
+						<p:commandButton value="Guardar" icon="ui-icon-disk"  oncomplete="confirmation.show()" update= ":frm1:datosEstablecimiento,:frm1:dtTable" />
+						<p:commandButton value="Limpiar" icon="ui-icon-arrowrefresh-1-e" action="#{facEstablecimientoControlador.cargarDatos()}" update= ":frm1:datosEstablecimiento,:frm1:dtTable" />
+					</h:panelGrid>
+				</h:panelGrid>
+			</p:panel>
+			
+			<p:panel id="dtTable" header="">
+					<p align="center"> 
+						<h:outputText value="Tabla Listado de Establecimiento" />
+					</p>
+				<p:dataTable var="establecimiento" id="listaEstablecimiento"
+					value="#{facEstablecimientoControlador.listEstablecimiento}"
+					paginator="true" rows="10" rowStyleClass="fila1"
+					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					rowsPerPageTemplate="5,10,15" styleClass="tabla">
+					<f:facet name="header" styleClass="cabeceraTabla">
+						<h:outputText value="Consulta de Establecimientos"  styleClass="cabeceraTabla"/>
+					</f:facet>
+					<p:column>
+						<f:facet name="header">
+							<h:outputText value="RUC Empresa" />
+						</f:facet>
+						<h:outputText value="#{establecimiento.id.ruc}" />
+					</p:column>
+					<p:column >
+						<f:facet name="header">
+							<h:outputText value="Codigo Establecimiento" />
+						</f:facet>
+						<h:outputText value="#{establecimiento.id.codEstablecimiento}" />
+					</p:column>
+					<p:column style="width:25%" >
+						<f:facet name="header">
+							<h:outputText value="Dirección  Establecimiento" />
+						</f:facet>
+						<h:outputText value="#{establecimiento.direccionEstablecimiento}" />
+					</p:column>
+					<p:column style="width:15%">
+						<f:facet name="header">
+							<h:outputText value="Correo electrónico" />
+						</f:facet>
+						<h:outputText value="#{establecimiento.correo}" />
+					</p:column>
+					<p:column style="width:15%">
+						<f:facet name="header">
+							<h:outputText value="Mensaje" />
+						</f:facet>
+						<h:outputText value="#{establecimiento.mensaje}" />
+					</p:column>
+					<p:column style="width:10%">
+						<f:facet name="header">
+							<h:outputText value="Local" />
+						</f:facet>
+						<h:outputText value="#{establecimiento.local}" />
+					</p:column>
+					<p:column style="width:10%">
+						<f:facet name="header">
+							<h:outputText value="Telefono" />
+						</f:facet>
+						<h:outputText value="#{establecimiento.telefono}" />
+					</p:column>
+					<p:column >
+						<f:facet name="header">
+							<h:outputText value="Estado" />
+						</f:facet>
+						<h:outputText value="#{establecimiento.isActive}" />
+					</p:column>
+					<p:column >
+						<f:facet name="header">
+							<h:outputText value="Acción"  />
+						</f:facet>
+						<p:commandButton title="Modificar" icon="ui-icon-document" action="#{facEstablecimientoControlador.modificar()}"
+							 update=":frm1:datosEstablecimiento,:frm1:dtTable" >
+							<f:setPropertyActionListener target="#{facEstablecimientoControlador.updateCampos}"	value="#{establecimiento}" />
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+			</p:panel>
+		</h:form>
+	</ui:define>
+	<ui:define name="dialogo">
+		<p:dialog header="Mensaje de confirmacion"  widgetVar="confirmation" id="MensajConfirma" modal="true">
+			<p:panel id="blodialog">
+		    	<h:outputLabel value="Esta seguro que desea realizar los cambios?"/><br/>
+		    	<h:panelGroup style=" font-size: 1.1em;font-weight:400; display: block; text-align: center;padding: 10px;">
+			    	<p:commandButton value="Yes" icon="ui-icon-check" oncomplete="confirmation.hide(),bloquearPagina.hide()" onstart="bloquearPagina.show()" action="#{facEstablecimientoControlador.insert('BotonAceptar')}" 
+			    		update=":frm1:growl,:frm1:dtTable,:frm1:datosEstablecimiento" />  
+				    <p:commandButton value="Not" icon="ui-icon-closethick" oncomplete="confirmation.hide()" update=":frm1:growl,:frm1:dtTable,:frm1:datosEstablecimiento" />    
+					<p:blockUI block="blodialog" widgetVar="bloquearPagina">  
+					       Guardando/modificando...<br />  
+						<p:graphicImage value="/imagenes/ajax-loader.gif"/>  
+					</p:blockUI>
+				</h:panelGroup>
+			</p:panel>
+		</p:dialog>
+	</ui:define>
+</ui:composition>
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+	<ui:composition template="/templates/clearTemplate.xhtml">
+		<ui:define name="tituloPagina">
+			<h:outputText value="FORMULARIO CLIENTE" />
+		</ui:define>
+		<ui:define name="paginaformulario">
+			<h:outputText value="FORMULARIO CLIENTE" />
+		</ui:define>
+		<ui:define name="contenido">
+			<h:form id="frm1">
+				<p:panelGrid columns="2">
+					<p:inputText value="#{dialogoControlador.cajatexto}"/>
+					<p:commandButton value="Abrir Dialogo" onclick="dlg2.show()" update=":frm2:panel2"/>
+				</p:panelGrid>
+			</h:form>
+			<h:form id="frm2">
+				<p:dialog id="dialogo2" header="Mi Dialogo" widgetVar="dlg2">
+					<p:panel id="panel2" header="PANEL PRIME">
+						<h:outputText value="#{dialogoControlador.cajatexto}" />
+					</p:panel>
+				</p:dialog>
+			</h:form>
+		</ui:define>
+		<ui:define name="autor">
+			<h:outputText value="Grupo 2 - Bolivar Salazar" />
+		</ui:define>
+	</ui:composition>
+</html>

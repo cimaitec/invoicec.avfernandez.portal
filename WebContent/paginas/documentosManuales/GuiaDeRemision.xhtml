@@ -1,0 +1,480 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+
+
+<ui:composition template="/templates/cimaTemplate.xhtml">
+	<ui:define name="tituloPagina">
+		<h:outputText value=".::Guía de Remisión::." />
+	</ui:define>
+
+	<ui:define name="tituloFormulario">
+		<h:outputText value="Remisión" />
+	</ui:define>
+
+	<ui:define name="contenido">
+		<h:form id="frm1" action="frm1">
+
+			<p:remoteCommand name="onload" 
+				action="#{facGuiaDeRemisionControlador.cargarDatos}" autorun="true"
+				update="datosEmisorPanel,dataGuia,dataDestinatario,detallesAdicionalesPanel,dataTransportista" />
+			<p:growl id="growl" showDetail="true" sticky="true" />
+
+			<p:panel id="datosEmisorPanel">
+				<h:outputText styleClass="titulo" value="DATOS DEL EMISOR" />
+				<br/>
+				<h:panelGrid id="pnInfoTrib" columns="6" title="Información del Emisor">
+
+					<h:outputText styleClass="label" value="Razón Comercial:" />
+					<h:outputText styleClass="text" value="#{facGuiaDeRemisionControlador.empresa.razonComercial}" />
+
+					<h:outputText styleClass="label" value="Contribuyente Especial:" />
+					<h:outputText styleClass="text" value="#{facGuiaDeRemisionControlador.empresa.contribEspecial}" />
+
+					<h:outputText styleClass="label" value="Ruc:" />
+					<h:outputText styleClass="text" value="#{facGuiaDeRemisionControlador.empresa.ruc}" />
+
+					<h:outputText styleClass="label" value="Dirección Matríz:" />
+					<h:outputText styleClass="text" value="#{facGuiaDeRemisionControlador.empresa.direccionMatriz}" />
+
+					<h:outputText styleClass="label" value="Obligado Contabilidad:" />
+					<h:outputText styleClass="text" value="#{facGuiaDeRemisionControlador.empresa.obligContabilidad}" />
+
+					<h:outputText styleClass="label" value="Razón Social:" />
+					<h:outputText styleClass="text" value="#{facGuiaDeRemisionControlador.empresa.razonSocial}" />
+
+				</h:panelGrid>
+			</p:panel>
+			<p:panel id="dataGuia">
+				<h:outputText styleClass="titulo" value="GUíA DE REMISIÓN" />
+				<h:panelGrid columns="6">
+					<h:outputText styleClass="label" value="Establecimiento : &nbsp;&nbsp;&nbsp;" />
+					<h:panelGroup>
+						<h:inputText styleClass="text" 	value="#{facGuiaDeRemisionControlador.codEstablecimiento}" disabled="true" style="text-align:center;" />
+						<p:commandButton icon="ui-icon-circle-zoomin" actionListener="#{facGuiaDeRemisionControlador.llenarEstablecimiento}"
+							oncomplete="diaEst.show()" update=":formdialog:estId,:frm1:dataGuia,:frm1:dataDestinatario,:frm1:detallesAdicionalesPanel,:frm1:dataTransportista" /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						<h:outputText value="*" style="color: #FF0000;"/>
+				 	</h:panelGroup>
+					
+					<h:outputText styleClass="label" value="Punto de Emisión : &nbsp;&nbsp;&nbsp;" />
+					<h:panelGroup id="campoPuntoEmision">
+						<h:inputText styleClass="text" value="#{facGuiaDeRemisionControlador.codPuntEmision}" disabled="true" style="text-align:center;" />
+						<p:commandButton icon="ui-icon-circle-zoomin" oncomplete="diaPunt.show()" disabled="#{facGuiaDeRemisionControlador.activo}"
+							update=":formdialog:puntId,:frm1:dataGuia,:frm1:dataDestinatario,:frm1:detallesAdicionalesPanel,:frm1:dataTransportista" action="#{facGuiaDeRemisionControlador.llenarPuntoEmision}" />
+						<h:outputText value="*" style="color: #FF0000;"/>
+					</h:panelGroup>
+					
+					<h:outputText styleClass="label" value="Secuencial : &nbsp;&nbsp;&nbsp;" /> 
+					<h:outputText styleClass="text" value="#{facGuiaDeRemisionControlador.secuencial}" />
+					
+					<h:outputText styleClass="label" value="Documentos : &nbsp;&nbsp;&nbsp;" />
+					<h:outputText styleClass="text" value="FACTURA" disabled="true" />
+
+					<h:outputText styleClass="label" value="Tipo de Emisión : &nbsp;&nbsp;&nbsp;" />
+					<h:panelGroup>
+						<p:selectOneMenu id="options" value="#{facGuiaDeRemisionControlador.tipoEmision}"	styleClass="text">
+								<f:selectItems value="#{facGuiaDeRemisionControlador.litipoEmision}" />
+								<p:ajax value="#{facGuiaDeRemisionControlador.tipoEmision}"></p:ajax>
+						</p:selectOneMenu>
+						<h:outputText value="*" style="color: #FF0000;"/>
+					</h:panelGroup>
+					
+					<h:outputText styleClass="label" value="Fecha Emisión : &nbsp;&nbsp;&nbsp;" />
+					<h:panelGroup>
+						<p:calendar id="femision" value="#{facGuiaDeRemisionControlador.fechaEmision}" pattern="dd/MM/yyyy">
+							<p:ajax event="dateSelect" value="#{facGuiaDeRemisionControlador.fechaEmision}" ></p:ajax>
+						</p:calendar>
+						<h:outputText value="*" style="color: #FF0000;"/>
+					</h:panelGroup>
+					
+				</h:panelGrid>
+				<br/>
+			</p:panel>
+			<p:panel id="dataTransportista">
+				<h:outputText styleClass="titulo" value="INFORMACIÓN DEL TRANSPORTISTA" />
+				
+				<h:panelGrid columns="3">
+					<h:panelGrid columns="2" >
+						<h:outputText styleClass="label" value="Tipo de identificación Transportista  : &nbsp;&nbsp;&nbsp;" />
+						<h:panelGroup>
+							<p:selectOneMenu value="#{facGuiaDeRemisionControlador.tipIdentificacionComprador}">
+								<f:selectItems 	value="#{facGuiaDeRemisionControlador.li_tipoIdenComp}" />
+								<p:ajax event="change" value="#{facGuiaDeRemisionControlador.tipIdentificacionComprador}" listener="#{facGuiaDeRemisionControlador.buscarRazonSocialxCombo}"
+									update=":frm1:txtIdeCom,:frm1:txtEmail,:frm1:lblRazonSocial,:frm1:txtTelefono,:frm1:campoPlaca,:frm1:growl"></p:ajax>
+							</p:selectOneMenu>
+							<h:outputText value="*" style="color: #FF0000;"/>
+						</h:panelGroup>
+					</h:panelGrid>
+					
+					<h:panelGrid columns="2">	
+						<h:outputText styleClass="label" value="Identificación del Transportista : &nbsp;&nbsp;&nbsp;" />
+						<h:panelGroup>
+							<p:autoComplete id="txtIdeCom" value="#{facGuiaDeRemisionControlador.identificacionComprador}" styleClass="text" maxlength="13" converterMessage="Solo numero;" 
+							completeMethod="#{facGuiaDeRemisionControlador.complete_RucComprador(facGuiaDeRemisionControlador.identificacionComprador,'transportista')}">
+								<p:ajax event="blur" listener="#{facGuiaDeRemisionControlador.buscarRazonSocial}" update=":frm1:lblRazonSocial,:frm1:txtEmail,:frm1:txtTelefono,:frm1:campoPlaca,:frm1:growl"></p:ajax>
+							</p:autoComplete>
+							<h:outputText value="*" style="color: #FF0000;"/>
+						</h:panelGroup>
+					</h:panelGrid>
+					
+					<h:panelGrid >
+						<h:outputText styleClass="label" value="Razón social Transportista  : &nbsp;&nbsp;&nbsp;" />
+						<h:outputText id="lblRazonSocial" styleClass="text" value="#{facGuiaDeRemisionControlador.razonSocialComprador}" />
+						
+						<h:outputText  styleClass="label" value="Correo Electronico :  " />
+						<h:outputText id="txtEmail" styleClass="text" value="#{facGuiaDeRemisionControlador.email}" />
+						
+						<h:outputText  styleClass="label" value="Teléfono :  " />
+						<h:outputText id="txtTelefono" styleClass="text" value="#{facGuiaDeRemisionControlador.telefonoTransp}" />
+						
+					</h:panelGrid>	
+					
+					<h:panelGrid columns="2" >	
+						<h:outputText styleClass="label" value="&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						 &nbsp;&nbsp;&nbsp;  Placa :  &nbsp;&nbsp;&nbsp;" />
+						<h:panelGroup id="campoPlaca">
+							<h:inputText styleClass="text" id="txtPlaca" value="#{facGuiaDeRemisionControlador.placa}" style="text-align:center;" disabled="true" />
+							<p:commandButton icon="ui-icon-circle-zoomin" oncomplete="diaPlacas.show()" disabled="#{facGuiaDeRemisionControlador.activoPlacas}"
+								update=":formdialog:placatId,:frm1:dataGuia,:frm1:dataDestinatario,:frm1:detallesAdicionalesPanel,:frm1:dataTransportista" action="#{facGuiaDeRemisionControlador.tablaPlacas}"></p:commandButton>
+							<h:outputText value="*" style="color: #FF0000;"/>
+						</h:panelGroup>
+					</h:panelGrid>
+					
+					<h:panelGrid columns="2">
+						<h:outputText styleClass="label" value="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fecha inicio Transporte : &nbsp;&nbsp;&nbsp; " />
+						<h:panelGroup>
+							<p:calendar id="finicial" styleClass="text" value="#{facGuiaDeRemisionControlador.fechaInicioTransporte}" pattern="dd/MM/yyyy" onkeypress="return permite(event, 'none')" >
+								<p:ajax event="dateSelect" value="#{facGuiaDeRemisionControlador.fechaInicioTransporte}" listener="#{facGuiaDeRemisionControlador.ValidarFechaDeFin}" update="ffinal"></p:ajax>
+							</p:calendar >
+							<h:outputText value="*" style="color: #FF0000;"/>
+						</h:panelGroup>
+					</h:panelGrid>
+					
+					<h:panelGrid columns="2">
+						<h:outputText styleClass="label" value="Fecha fin Transporte : &nbsp;&nbsp;" />
+						<h:panelGroup>
+							<p:calendar id="ffinal" styleClass="text" value="#{facGuiaDeRemisionControlador.fechaFinTransporte}"
+								mindate="#{facGuiaDeRemisionControlador.fechaInicioTransporte}" attern="dd/MM/yyyy" onkeypress="return permite(event, 'none')">
+								<p:ajax event="dateSelect" value="#{facGuiaDeRemisionControlador.fechaFinTransporte}" ></p:ajax>
+							</p:calendar>
+							<h:outputText value="*" style="color: #FF0000;"/>
+						</h:panelGroup>
+					</h:panelGrid>
+				</h:panelGrid>
+				
+				<h:panelGrid columns="2">
+					<h:outputText styleClass="label" value=" &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dirección de Partida   : &nbsp;&nbsp;&nbsp;"  />
+					<h:panelGroup>
+						<h:inputTextarea  styleClass="text" id="txtPartida" autoResize="false"
+							value="#{facGuiaDeRemisionControlador.dirPartida}" rows="3" cols="70">
+							<p:ajax value="#{facGuiaDeRemisionControlador.dirPartida}" />
+						</h:inputTextarea>
+						<h:outputText value="*" style="color: #FF0000;"/>
+					</h:panelGroup>
+				</h:panelGrid>
+			<br/>	
+			</p:panel>
+			<p:panel id="dataDestinatario">
+				<br/>
+				<h:outputText styleClass="titulo" value="DESTINATARIO" />
+				<br/>
+				<h:panelGrid columns="3">
+					<h:panelGrid columns="2">	
+						<h:outputText styleClass="label" value="Identificación Destinatario   : &nbsp; &nbsp;&nbsp;&nbsp;  &nbsp;&nbsp;" />
+						<h:panelGroup>
+							<p:autoComplete id="txtIdenDes" value="#{facGuiaDeRemisionControlador.identificacionDestinatario}" styleClass="text" maxlength="13" converterMessage="Solo numero;" 
+								completeMethod="#{facGuiaDeRemisionControlador.complete_RucComprador(facGuiaDeRemisionControlador.identificacionDestinatario,'Destinos')}">
+								<p:ajax event="blur" listener="#{facGuiaDeRemisionControlador.buscarRucDestinatario}" update=":frm1:lblRaSoDest,:frm1:lblDiDest,:frm1:growl" />
+							</p:autoComplete>
+							<h:outputText value="*" style="color: #FF0000;"/>
+						</h:panelGroup>
+					</h:panelGrid>
+					
+					<h:panelGrid columns="2">
+						<h:outputText styleClass="label" value="Razón Social Destinatario :" />
+						<h:outputText id="lblRaSoDest" styleClass="text" value="#{facGuiaDeRemisionControlador.razonSocialDestinatario} &nbsp;&nbsp;&nbsp;" />
+					</h:panelGrid>	
+					
+					<h:panelGrid columns="2">
+						<h:outputText styleClass="label" value="Dirección Destinatario :" />
+						<h:outputText id="lblDiDest" styleClass="text" value="#{facGuiaDeRemisionControlador.direccionDestinatario}" />
+					</h:panelGrid>
+					
+					<h:panelGrid columns="2">
+						<h:outputText styleClass="label" value="Codigo Establecimiento Destino : " />
+						<h:panelGroup>
+							<p:inputMask id="txtCodEstDest" styleClass="text" mask="999"
+								value="#{facGuiaDeRemisionControlador.codEstablecimientoDest}" style=" width : 55px;text-align:center;">
+							</p:inputMask>
+							<h:outputText value="*" style="color: #FF0000;"/>
+						</h:panelGroup>
+					</h:panelGrid>
+					
+					<h:panelGrid columns="2">
+						<h:outputText styleClass="label" value="Documento Aduanero : &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; " />
+						<h:panelGroup>
+							<h:inputText id="txtdocAduaUnico" value="#{facGuiaDeRemisionControlador.docAduaneroUnico}">
+								<p:ajax event="keyup" listener="#{facGuiaDeRemisionControlador.verificarDocAduanero('Aduanero')}" update=":frm1:growl"></p:ajax>
+							</h:inputText>
+							<h:outputText value="*" style="color: #FF0000;"/>
+						</h:panelGroup>
+					</h:panelGrid>
+				</h:panelGrid>
+				<br />
+				<h:panelGrid columns="4">
+					<h:outputText styleClass="label" value="Motivo del Traslado :" />
+					<h:panelGroup>
+						<h:panelGroup>
+							<h:inputTextarea id="txtMotivoTra" autoResize="false" rows="3" cols="40" value="#{facGuiaDeRemisionControlador.motivoTraslado}">
+								<p:ajax value="#{facGuiaDeRemisionControlador.motivoTraslado}" />
+							</h:inputTextarea>
+							<h:outputText value="*" style="color: #FF0000;"/>
+						</h:panelGroup>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					</h:panelGroup>
+					
+					<h:outputText styleClass="label" value="Ruta : " />
+					<h:panelGroup>
+						<h:inputTextarea styleClass="text" id="txtRuta" rows="3" cols="40"  value="#{facGuiaDeRemisionControlador.ruta}" autoResize="false" >
+							<p:ajax value="#{facGuiaDeRemisionControlador.ruta}" />
+						</h:inputTextarea>
+						<h:outputText value="*" style="color: #FF0000;"/>
+					</h:panelGroup>
+				
+					<h:outputText styleClass="label" value="Tipo de Documento : " />
+					<h:outputText styleClass="text" value="FACTURA" />
+					
+					<h:outputText styleClass="label" value="Número Documento : &nbsp;&nbsp;&nbsp;" />
+					<h:panelGroup>
+						<p:inputMask mask="999-999-999999999" styleClass="text"	value="#{facGuiaDeRemisionControlador.numDocSustento}"
+							converterMessage="Campo solo numero" style="text-align:right;">
+						</p:inputMask> 
+						<h:outputText value="*" style="color: #FF0000;"/>
+					</h:panelGroup>
+					
+					<h:outputText styleClass="label" value="Fecha Emisión Documento: &nbsp;" />
+					<h:panelGroup>
+						<p:calendar id="femisionDocu" pattern="dd/MM/yyyy" value="#{facGuiaDeRemisionControlador.fechaEmisionDocSustento}" />
+						<h:outputText value="*" style="color: #FF0000;"/>
+					</h:panelGroup>
+					
+					<h:outputText styleClass="label" value="Número de Autorización : " />
+					<h:panelGroup>
+						<h:inputText styleClass="text" id="txtNumAutDocSustento" value="#{facGuiaDeRemisionControlador.numAutDocSustento}"
+							converterMessage="Autorizacion Solo Numero" style="text-align:right;">
+							<p:ajax event="keyup" listener="#{facGuiaDeRemisionControlador.verificarDocAduanero('Autorización')}"  update=":frm1:growl" />
+						</h:inputText>
+						<h:outputText value="*" style="color: #FF0000;"/>
+					</h:panelGroup>
+				</h:panelGrid>
+				<br />
+				<br/>
+				<h:panelGroup>
+					<p:commandButton value="Detalle" styleClass="text"  icon="ui-icon-circle-plus"
+						action="#{facGuiaDeRemisionControlador.nuevoDetalle}"
+						update=":frm1:dtDetalle,:frm1:growl">
+					</p:commandButton>
+					
+					<p:commandButton value="Detalle Adicionales" styleClass="text" icon="ui-icon-circle-plus" 
+						action="#{facGuiaDeRemisionControlador.nuevoDetalleAdicionales}"
+						update=":frm1:detallesAdicionalesPanel,:frm1:growl">
+					</p:commandButton>
+					<h:panelGroup>
+						<p:commandButton value="Guardar" styleClass="text" oncomplete="confirmation.show()" icon="ui-icon-disk" update=":frm1:datosEmisorPanel,:frm1:dataGuia,:frm1:dataDestinatario,:frm1:detallesAdicionalesPanel,:frm1:growl">
+						</p:commandButton>
+						
+					</h:panelGroup>
+					
+					<p:dataTable id="dtDetalle"
+						value="#{facGuiaDeRemisionControlador.listDetDoc}"
+						var="detDocumento" paginator="true" styleClass="tabla"
+						binding="#{facGuiaDeRemisionControlador.dataTableDetalle}"
+						rows="10" rowStyleClass="fila1"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						rowsPerPageTemplate="5,10,15">
+						
+						<p:column headerText="Linea">
+							<h:outputText id="txtLinea"
+								value="#{detDocumento.id.secuencialDetalle}" />
+						</p:column>
+						
+						<p:column headerText="Codigo">
+							<h:inputText id="txtCodProducto" value="#{detDocumento.codPrincipal}" disabled="true" style="text-align:center;" required="true">
+								<p:ajax value="#{detDocumento.codPrincipal}" />
+							</h:inputText>
+							<p:commandButton icon="ui-icon-circle-zoomin"  	actionListener="#{facGuiaDeRemisionControlador.llenarCodigoProducto}" oncomplete="diaProducto.show()"
+								update=":formdialog:ProductoId,:frm1:dataGuia,:frm1:dataDestinatario,:frm1:detallesAdicionalesPanel">
+									<f:setPropertyActionListener target="#{facGuiaDeRemisionControlador.selectDetalles}" value="#{detDocumento}" />
+							</p:commandButton>
+						</p:column>
+						
+						<p:column headerText="Codigo Auxiliar" style="width:5%;">
+							<h:outputText id="txtcodAux" value="#{detDocumento.codAuxiliar}" />
+						</p:column>
+						
+						<p:column headerText="Descripción" style="width:45%;">
+							<h:outputText id="txtDesPro" value="#{detDocumento.descripcion}" />
+						</p:column>
+						
+						<p:column headerText="Cantidad">
+							<h:inputText styleClass="text" id="txtCantidad"
+								value="#{detDocumento.cantidad}" converterMessage="Campo cantidad  : Solo Numeros" style="text-align:right;">
+								<p:ajax event="keyup" converter="#{Integer}" value="#{detDocumento.cantidad}" update=":frm1:growl"></p:ajax>
+							</h:inputText>
+						</p:column>
+						
+						<p:column headerText="Acción">
+							<p:commandButton title="Borrar"  icon="ui-icon-trash"
+								action="#{facGuiaDeRemisionControlador.borrarlineaDetDoc}"	update=":frm1:dataDestinatario"></p:commandButton>
+						</p:column>
+					</p:dataTable>
+				</h:panelGroup>
+				<br/>
+			</p:panel>
+			<p:panel id="detallesAdicionalesPanel">
+				<h:outputText styleClass="titulo" value="Detalles Adicionales" />
+				<br/>
+				<p:dataTable id="dtDetalleAd" styleClass="tabla"
+					value="#{facGuiaDeRemisionControlador.listaAdiDoc}"
+					var="detalleAdicional" rowStyleClass="fila1" paginator="true"
+					binding="#{facGuiaDeRemisionControlador.dataTableDetalleAdicional}"
+					rows="10"
+					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					rowsPerPageTemplate="5,10,15">
+					
+					<p:column>
+						<f:facet name="header">
+							<h:outputText value="Nombre" />
+						</f:facet>
+						<h:inputText styleClass="text" value="#{detalleAdicional.nombre}" style="width:100%" >
+						</h:inputText>
+					</p:column>
+					<p:column>
+						<f:facet name="header">
+							<h:outputText value="Descripción" />
+						</f:facet>
+						<h:inputText styleClass="text" value="#{detalleAdicional.valor}" style="width:100%">
+						</h:inputText>
+					</p:column>
+					<p:column style="width:4%">
+						<f:facet name="header">
+							<h:outputText value="Acción" />
+						</f:facet>
+						<p:commandButton title="Borrar"  icon="ui-icon-trash"
+							action="#{facGuiaDeRemisionControlador.BorrarLineaDetAdicional}" update=":frm1:detallesAdicionalesPanel" />
+					</p:column>
+				</p:dataTable>
+			</p:panel>
+		</h:form>
+	</ui:define>
+	<ui:define name="dialogo">
+		<h:form id="formdialog">
+			<p:dialog header="Establecimiento" widgetVar="diaEst" id="estId" resizable="false" modal="true">
+				<p:panel>
+					<p:dataTable id="taEst" var="establ"
+						value="#{facGuiaDeRemisionControlador.listEstab}"
+						widgetVar="estTa" rowStyleClass="fila1"
+						filteredValue="#{facGuiaDeRemisionControlador.filtarEstab}"
+						styleClass="tabla">
+						<p:column headerText="Codigo" style="width:40%" filterBy="#{establ.id.codEstablecimiento}">
+							<h:outputText value="#{establ.id.codEstablecimiento}" />
+						</p:column>
+						<p:column headerText="Seleccionar">
+							<p:commandButton icon="ui-icon-check" oncomplete="diaEst.hide()" action="#{facGuiaDeRemisionControlador.ubicarEstablecimiento}"
+								update=":frm1:dataGuia,:frm1:dataDestinatario,:frm1:detallesAdicionalesPanel">
+								<f:setPropertyActionListener target="#{facGuiaDeRemisionControlador.selectEstab}" value="#{establ}"/>
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>
+				</p:panel>
+			</p:dialog>
+			<p:dialog header="Punto Emision" widgetVar="diaPunt" id="puntId" resizable="false" modal="true">
+				<p:panel>
+					<p:dataTable id="taPunt" var="punto" value="#{facGuiaDeRemisionControlador.listPuntoEm}" widgetVar="puntTa" rowStyleClass="fila1"
+						filteredValue="#{facGuiaDeRemisionControlador.filtarPuntoEm}" styleClass="tabla">
+						<p:column headerText="Codigo" style="width:40%" filterBy="#{punto.id.codPuntEmision}">
+							<h:outputText value="#{punto.id.codPuntEmision}" />
+						</p:column>
+						<p:column headerText="Seleccionar">
+							<p:commandButton icon="ui-icon-check" oncomplete="diaPunt.hide()" action="#{facGuiaDeRemisionControlador.ubicarPuntoEmision}"
+								update=":frm1:dataGuia,:frm1:dataDestinatario,:frm1:detallesAdicionalesPanel">
+								<f:setPropertyActionListener target="#{facGuiaDeRemisionControlador.selectPuntoEm}" value="#{punto}" />
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>
+				</p:panel>
+			</p:dialog>
+			<p:dialog header="Detalles" widgetVar="diaPlacas" id="placatId" draggable="false" resizable="false" modal="true">
+				<p:panel>
+					<p:dataTable id="taPlaca" var="placa" value="#{facGuiaDeRemisionControlador.transporte}" styleClass="tabla" rowStyleClass="fila1">
+						<p:column headerText="Placa">
+							<h:outputText value="#{placa.id.placa}" />
+						</p:column>
+						<p:column headerText="Descripción">
+							<h:outputText value="#{placa.descripcion}" />
+						</p:column>
+						<p:column headerText="Marca">
+							<h:outputText value="#{placa.marca}" />
+						</p:column>
+						<p:column headerText="Modelo">
+							<h:outputText value="#{placa.modelo}" />
+						</p:column>
+						<p:column headerText="Chasis">
+							<h:outputText value="#{placa.chasis}" />
+						</p:column>
+						<p:column headerText="Conductor">
+							<h:outputText value="#{placa.conductor}" />
+						</p:column>
+							<p:column headerText="Seleccionar">
+							<p:commandButton icon="ui-icon-check" oncomplete="diaPlacas.hide()"  action="#{facGuiaDeRemisionControlador.ubicarPlaca}"
+								update=":frm1:txtPlaca,:frm1:dataGuia,:frm1:dataDestinatario,:frm1:detallesAdicionalesPanel">
+									<f:setPropertyActionListener target="#{facGuiaDeRemisionControlador.selectTransporte}" value="#{placa}"></f:setPropertyActionListener>
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>
+				</p:panel>
+			</p:dialog>
+			<p:dialog header="Productos" widgetVar="diaProducto" id="ProductoId" resizable="false" modal="true">
+				<p:panel id = "panelDialogo">
+					<p:dataTable id="taProducto" var="producto" value="#{facGuiaDeRemisionControlador.listProd}"
+						widgetVar="product"	filteredValue="#{facGuiaDeRemisionControlador.filtarProd}"
+						styleClass="tabla" rowStyleClass="fila1">
+						<p:column headerText="Codigo" style="width:40%" filterBy="#{producto.codPrincipal}">
+							<h:outputText value="#{producto.codPrincipal}" />
+						</p:column>
+						<p:column headerText="Descripción" style="width:40%" filterBy="#{producto.descripcion}">
+							<h:outputText value="#{producto.descripcion}" />
+						</p:column>
+						<p:column headerText="Seleccionar">
+							<p:commandButton icon="ui-icon-check" oncomplete="diaProducto.hide()" action="#{facGuiaDeRemisionControlador.UbicarProductos}"
+							update=":frm1:dtDetalle,:frm1:dtDetalle:txtCodProducto,:frm1:dtDetalle:txtDesPro,:frm1:dtDetalle:txtcodAux,:frm1:growl,:frm1:dataGuia,:frm1:dataDestinatario,:frm1:detallesAdicionalesPanel">
+								<f:setPropertyActionListener target="#{facGuiaDeRemisionControlador.selectProd}" value="#{producto}"></f:setPropertyActionListener>
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>
+				</p:panel>
+			</p:dialog>
+		</h:form>
+		<p:dialog header="Mensaje de confirmación"  widgetVar="confirmation"  closable="false" resizable="false" modal="true">
+	    	<p:panel id="blodialog">
+	    	<h:outputLabel value="Esta seguro que desea guardar los cambios?"/><br/>
+	    	<h:panelGroup style=" font-size: 1.1em;font-weight:400; display: block; text-align: center;padding: 10px;">
+	    		<p:commandButton value="Yes" oncomplete="confirmation.hide(),bloquearPagina.hide()" onstart="bloquearPagina.show()"  icon="ui-icon-check" action="#{facGuiaDeRemisionControlador.insertEntidades}" update="frm1,:frm1:datosEmisorPanel,:frm1:dataGuia,:frm1:dataDestinatario,:frm1:detallesAdicionalesPanel,:frm1:growl,:frm1:dataTransportista" />  
+		    	<p:commandButton value="Not" oncomplete="confirmation.hide()"  icon="ui-icon-close" update=":frm1:datosEmisorPanel,:frm1:dataGuia,:frm1:dataDestinatario,:frm1:detallesAdicionalesPanel,:frm1:growl,:frm1:dataTransportista"/>
+ 				<p:blockUI block="blodialog" widgetVar="bloquearPagina">  
+					       Actualizando Registro...<br />  
+						<p:graphicImage value="/imagenes/ajax-loader.gif"/>  
+				</p:blockUI>
+ 			</h:panelGroup>
+	    	</p:panel> 
+		</p:dialog>
+	</ui:define>
+</ui:composition>
+
+</html>

@@ -1,0 +1,197 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/templates/cimaTemplate.xhtml">
+	<ui:define name="tituloPagina">
+		<h:outputText value="Facturas" />
+	</ui:define>
+
+	<ui:define name="tituloFormulario">
+		<h:outputText value="Facturas" />
+	</ui:define>
+
+
+	<ui:define name="contenido">
+	<h:form action="frm1" >	
+
+    <h:commandButton value="PRUEBA" rendered="true" action="#{facEmpresaControlador.buscarPorCodigo}" update='datosEmisorPanel' />	       	
+	 <p:panel id="datosEmisorPanel">
+	<h:panelGrid columns="6" title="Informacion del Emisor"   >
+				
+				<h:outputText value="Ruc:" />
+				<h:outputText value="#{facEmpresaControlador.empresa.ruc}" />
+				
+				<h:outputText value="Nombre Comercial:" />
+				<h:outputText value="#{facEmpresaControlador.empresa.razonComercial}" />
+				
+				<h:outputText value="Razon Social:" />
+				<h:outputText value="#{facEmpresaControlador.empresa.razonSocial}" />
+				
+				<h:outputText value="Direccion Matriz:" />
+				<h:outputText value="#{facEmpresaControlador.empresa.direccionMatriz}" />
+				
+				<h:outputText value="Contribuyente Especial:" />
+				<h:outputText value="#{facEmpresaControlador.empresa.contribEspecial}" />
+				
+				<h:outputText value="Obligado Contabilidad:" />
+				<h:outputText value="#{facEmpresaControlador.empresa.obligContabilidad}" />
+          </h:panelGrid>
+          </p:panel>
+		</h:form>
+
+	<h:form action="frm2" >		
+	 <p:panel id="factura" header="FACTURA">
+					<h:panelGrid columns="6" >
+						<h:outputText value="Nro.:" />
+						<h:outputText value="#{CabeceraFacturaControlador.secuencial}" />
+						
+						<h:outputText value="Documento:" />
+						<h:inputText value="#{CabeceraFacturaControlador.codigoDocumento}" />
+						
+						<h:outputText value="tipo Emisión:" />
+						<h:selectOneMenu value="#{CabeceraFacturaControlador.tipoEmision}" />
+						
+					
+						<h:outputText value="Establecimiento:" />
+						<h:selectOneMenu value="#{CabeceraFacturaControlador.lstEstablecimientos}" />
+
+						<h:outputText value="Fecha de Emision:" />
+						<h:inputText value="#{CabeceraFacturaControlador.fechaemision}">
+						<f:convertDateTime pattern="dd/MM/yyyy"/>
+						</h:inputText>
+
+						<h:outputText value="Tipo Comprador:" />
+						<h:inputText  value="#{CabeceraFacturaControlador.tipIdentificacion}" />
+
+						<h:outputText value="Identificacion del Comprador:" />
+						<h:inputText  value="#{CabeceraFacturaControlador.tipIdentificacionComprador}" />
+					
+						<h:outputText value="Razón Social/Apellidos y Nombres:" />
+						<h:inputText  value="#{CabeceraFacturaControlador.RazonSocial}" />
+
+						<h:outputText value="Dirección Establecimiento:" />
+						<h:inputText  value="#{CabeceraFacturaControlador.Direccion}" />
+
+						<h:outputText value="Correo Electrónico:" />
+						<h:inputText  value="#{CabeceraFacturaControlador.email}" />
+                    </h:panelGrid>
+
+					<h:panelGroup>
+						<h:outputText value="Detalle" />
+							<p:dataTable value="#{DetalleFacturaControlador}" var="det">
+								<p:column>
+									<f:facet name="header">
+										<h:outputText value="Codigo Principal" />
+									</f:facet>
+									<h:outputText value="#{det.codprincipal}" />
+								</p:column>
+								<p:column>
+									<f:facet name="header">
+										<h:outputText value="Descripcion" />
+									</f:facet>
+									<h:inputText value="#{det.facProductos.codigo}" />									
+									<h:outputText value="#{det.facProductos.descripcion}" />
+								</p:column>
+
+								<p:column>
+									<f:facet name="header">
+										<h:outputText value="Cantidad" />
+									</f:facet>
+									<h:inputText value="#{det.cantidad}" style="text-align: right;" />
+								</p:column>
+								<p:column>
+									<f:facet name="header">
+										<h:outputText value="Precio" />
+									</f:facet>
+									<h:outputText value="#{det.facProductos.precio}" />
+								</p:column>
+								<p:column>
+									<f:facet name="header">
+										<h:outputText value="Descuento" />
+									</f:facet>
+									<h:outputText value="#{det.descuento}" />
+								</p:column>
+								<p:column>
+									<f:facet name="header">
+										<h:outputText value="Valor Total" />
+									</f:facet>
+									<h:outputText value="#{det.valorTotal}" />
+								</p:column>
+								<p:column>
+									<f:facet name="header">
+										<h:outputText value="Valor ICE" />
+									</f:facet>
+									<h:outputText value="#{det.valorIce}" />
+								</p:column>
+
+								<p:column>
+									<f:facet name="header">
+										<h:outputText value="Tipo Iva" />
+									</f:facet>
+									<h:outputText value="#{det.facProductos.tipoIva}" />
+								</p:column>
+								
+								<p:column>
+									<f:facet name="footer">
+										<h:outputText value="Totales" />
+									</f:facet>
+									
+								</p:column>								
+							</p:dataTable>
+						<h:outputText value="Detalles Adicionales" />
+							<p:dataTable value="#{facCabDocumentosAdicionales}" var="dad">
+								<p:column>
+									<f:facet name="header">
+										<h:outputText value="Nombre" />
+									</f:facet>
+									<h:outputText value="#{dad.nombre}" />
+								</p:column>
+								<p:column>
+									<f:facet name="header">
+										<h:outputText value="Descripcion" />
+									</f:facet>
+									<h:inputText value="#{dad.descripcion}" />									
+									<h:outputText value="#{det.facProductos.descripcion}" />
+								</p:column>
+							</p:dataTable>
+
+							<h:panelGrid columns="2" style="align:rigth">	
+
+										<h:outputText value="Subtotal Sin Impuesto:" />
+										<h:outputText value="#{CabeceraFacturaControlador.totalSinImpuesto}" />
+
+										<h:outputText value="Subtotal 12%:" />
+										<h:outputText value="#{CabeceraFacturaControlador.subtotal12}" />
+										<h:outputText value="Subtotal 0%:" />
+										<h:outputText value="#{CabeceraFacturaControlador.subtotal0}" />
+
+										<h:outputText value="Subtotal No Objeto de Iva:" />
+										<h:outputText value="#{CabeceraFacturaControlador.subtotalNoIva}" />
+
+										<h:outputText value="Total Descuento:" />
+										<h:outputText value="#{CabeceraFacturaControlador.totalDescuento}" />
+
+										<h:outputText value="Valor ICE:" />
+										<h:outputText value="#{CabeceraFacturaControlador.totalIce}" />
+
+										<h:outputText value="Iva 12%:" />
+										<h:outputText value="#{CabeceraFacturaControlador.totalIva}" />
+
+										<h:outputText value="Propina 10%:" />
+										<h:outputText value="#{CabeceraFacturaControlador.propina10}" />
+						
+										<h:outputText value="Valor Total:" />
+										<h:outputText value="#{CabeceraFacturaControlador.valorTotal}" />
+  						          </h:panelGrid>
+						</h:panelGroup>
+			</p:panel>
+				</h:form>
+	</ui:define>
+
+</ui:composition>
+
+</html>

@@ -1,0 +1,211 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	
+ <ui:composition template="/templates/cimaTemplate.xhtml">
+	<ui:define name="tituloPagina">
+		<h:outputText value=".::Punto Emisión::." />
+	</ui:define>
+
+	<ui:define name="tituloFormulario">
+		<h:outputText value="Punto emisión" />
+	</ui:define>
+	<ui:define name="contenido" >
+		<h:form id="frm1" action="frm1" onkeypress=" if (event.keyCode == 13) { return false; }">
+			<h3 align="center" class="title ui-widget-header ui-corner-all">Ingreso de Punto de Emision</h3>
+			<p:remoteCommand name="onload"
+				action="#{fac_puntoEmisionControlador.cargarDatos}" autorun="true"
+				update="datosEmision,listaspuntosEmision" />
+				
+			<p:growl id="growl" showDetail="true" autoUpdate=":frm1:listaspuntosEmision,:frm1:datosEmision"/>
+			
+			<p:panel id="datosEmision" header="Datos de los Puntos de Emision" menuTitle="Ingreso de los Puntos de Emision">
+				<center>
+					<h:panelGrid columns="2" >
+						
+							<h:outputLabel value="Empresa:" styleClass="label" />
+							<p:selectOneMenu value="#{fac_puntoEmisionControlador.seleccionaEmpresa}" >
+									<f:selectItems value="#{fac_puntoEmisionControlador.listaEmpresa}" />
+									<p:ajax event="change" listener="#{fac_puntoEmisionControlador.ValidarCambioEventosControles('cambioEmpresa')}"   update=":frm1:datosEmision" />
+							</p:selectOneMenu>
+							
+							<h:outputLabel value="Establecimiento:" styleClass="label" />
+							<h:panelGroup style="text-align: left;">
+								<p:inputText value="#{fac_puntoEmisionControlador.seleccionaEstablecimiento}" readonly="true" >
+								</p:inputText>
+								<p:commandButton oncomplete="DetalleEstableciminto.show()" icon ="ui-icon-circle-zoomin" actionListener="#{fac_puntoEmisionControlador.CargarTablaDinamica('establecimiento')}" 
+								update=":formdialog:detalleestablecimiento,:frm1:growl,:frm1:datosEmision,:frm1:listaspuntosEmision" >
+								</p:commandButton>
+							</h:panelGroup>
+					</h:panelGrid>
+				</center>
+				<p:panel id="listaspuntosEmision" header="">
+					<p align="center"> 
+						<h:outputText value="Tabla Listado de los Puntos de Emision" />
+					</p>
+					<h:panelGrid columns="7" style="align:CENTER">
+						<p:commandButton value="Agregar" icon="ui-icon-arrow-4" action="#{fac_puntoEmisionControlador.EventoBotonDetalle('Agregar')}" update=":frm1:puntoEmi,:frm1:growl" ></p:commandButton>
+						<p:commandButton value="Modificar" icon="ui-icon-disk" action="#{fac_puntoEmisionControlador.EventoBotonDetalle('Modificar')}" update=":frm1:puntoEmi,:frm1:growl" ></p:commandButton>
+						<p:commandButton value="Guardar" oncomplete="confirmation2.show()" icon="ui-icon-disk" action="#{fac_puntoEmisionControlador.EventoBotonDetalle('dialogo')}" update=":frm1:listaspuntosEmision,:frm1:datosEmision,:frm1:growl" ></p:commandButton>
+						<p:commandButton value="Limpiar" icon="ui-icon-arrowrefresh-1-e" action="#{fac_puntoEmisionControlador.cargarDatos()}" update=":frm1:listaspuntosEmision,:frm1:datosEmision,:frm1:growl" ></p:commandButton>
+					</h:panelGrid>
+					<p:dataTable id="puntoEmi" var="emision" value="#{fac_puntoEmisionControlador.datapuntoEmision}" paginator="true" rows="10" editable="true"
+						styleClass="tabla"> 
+						  <f:facet name="header">  
+					           Detalle de Puntos de Emision  
+					      </f:facet>
+					      
+					      <p:ajax event="rowEdit" listener="#{fac_puntoEmisionControlador.onEdit}" update=":frm1:growl" />
+					      
+					      <p:column headerText="Cod. Punto Emision" >
+					            <p:cellEditor>  
+					                <f:facet name="output">  
+					                    <h:outputText value="#{emision.codPuntoEmision}" />  
+					                </f:facet>  
+					                <f:facet name="input">  
+					                    <p:inputText value="#{emision.codPuntoEmision}" maxlength="3" style="width:100%"/>  
+					                </f:facet>  
+					            </p:cellEditor>  
+					      </p:column>
+					      
+					      <p:column headerText="Tipo Documento" style="width:30%">  
+					            <p:cellEditor>  
+					                <f:facet name="output">  
+					                    <h:outputText value="#{emision.codTipoDocumento}" />  
+					                </f:facet> 
+					                <f:facet name="input">
+					                	<h:selectOneMenu value="#{emision.codTipoDocumento}" >  
+					                        <f:selectItems value="#{fac_puntoEmisionControlador.listaTipodocumento}"  
+					                            var="man"
+					                            itemLabel="#{man}"  
+					                            itemValue="#{man.value}" />  
+					                    </h:selectOneMenu> 
+					                </f:facet>  
+					            </p:cellEditor>  
+					      </p:column>
+					      
+					      <p:column headerText="Caja" style="width:30%">
+					            <p:cellEditor>  
+					                <f:facet name="output">  
+					                    <h:outputText value="#{emision.caja}" />  
+					                </f:facet>
+					                <f:facet name="input">
+					                	<p:inputText value="#{emision.caja}" maxlength="3" style="width:50%"/>
+					                </f:facet> 
+					            </p:cellEditor>  
+					      </p:column>
+					      
+					      
+					      <p:column headerText="Forma de Emision" style="width:30%">
+					            <p:cellEditor>  
+					                <f:facet name="output">  
+					                    <h:outputText value="#{emision.formaEmision}" />  
+					                </f:facet>
+					                
+					                <f:facet name="input">
+					                	<h:selectOneMenu value="#{emision.formaEmision}" >  
+					                        <f:selectItems value="#{fac_puntoEmisionControlador.listaFormaEmision}"  
+					                            var="man"   
+					                            itemLabel="#{man}"  
+					                            itemValue="#{man.value}" />
+					                    </h:selectOneMenu>
+					                	
+					                </f:facet>
+					            </p:cellEditor>  
+					      </p:column>
+					      
+					      <p:column headerText="Ambiente" style="width:30%">  
+					            <p:cellEditor>  
+					                <f:facet name="output">  
+					                    <h:outputText value="#{emision.tipoAmbiente}" />  
+					                </f:facet>
+					                <f:facet name="input">
+					                	  <h:selectOneMenu value="#{emision.tipoAmbiente}" >  
+					                        <f:selectItems value="#{fac_puntoEmisionControlador.listaAmbiente}"  
+					                            var="man"   
+					                            itemLabel="#{man}"  
+					                            itemValue="#{man}" />
+					                    </h:selectOneMenu> 
+					                </f:facet>
+					            </p:cellEditor>  
+					      </p:column>
+					      					      
+					      <p:column headerText="Estado">
+					            <p:cellEditor>  
+					                <f:facet name="output">  
+					                    <h:outputText value="#{emision.isActive}" />  
+					                </f:facet>  
+					                <f:facet name="input">
+					                	<h:selectOneMenu value="#{emision.isActive}" >  
+					                        <f:selectItems value="#{fac_puntoEmisionControlador.listaEstado}"  
+					                            var="man"
+					                            itemLabel="#{man}"  
+					                            itemValue="#{man.value}" />  
+					                    </h:selectOneMenu> 
+					                </f:facet>   
+					            </p:cellEditor>
+					      </p:column>
+					      <p:column  headerText="Editar Contenido" style="#{fac_puntoEmisionControlador.estiloColumna}">  
+					          <p:rowEditor />  
+					      </p:column> 
+					      <p:column style="#{fac_puntoEmisionControlador.estiloColumnBottonDelete}">  
+					          <p:commandButton icon="ui-icon-trash" oncomplete="confirmation.show()" action="#{fac_puntoEmisionControlador.EventoBotonDetalle('Eliminar')}" update=":frm1:listaspuntosEmision,:frm1:growl">
+					          	<f:setPropertyActionListener value="#{emision}" target="#{fac_puntoEmisionControlador.seleccionarlistaPuntoEmision}" />  
+					          </p:commandButton>     
+					      </p:column> 
+					</p:dataTable>
+				</p:panel>
+			</p:panel>
+		</h:form>
+	</ui:define>
+	<ui:define name="dialogo">
+		<h:form id="formdialog">
+			<p:dialog header="Detalle Establecimiento" widgetVar="DetalleEstableciminto" id="detalleestablecimiento" draggable="false" resizable="false" modal="true">
+				<p:panel>
+				  <p:dataTable id="establecimiento" var="Establecimiento" value="#{fac_puntoEmisionControlador.tablaEstablecimiento}" widgetVar="EstablecimientoTable" filteredValue="#{fac_puntoEmisionControlador.filtrotablaEstablecimiento}">                      
+					<p:column headerText="Establecimiento" style="width:50%"  filterBy="#{Establecimiento.id.codEstablecimiento}">
+							<h:outputText value="#{Establecimiento.id.codEstablecimiento}" />
+					</p:column>
+					<p:column headerText="Seleccionar">  
+				        <p:commandButton icon="ui-icon-check" oncomplete="DetalleEstableciminto.hide()" update=":frm1:datosEmision,:frm1:listaspuntosEmision" action="#{fac_puntoEmisionControlador.SeleccionarCampoTabla('establecimiento')}">
+				          	<f:setPropertyActionListener value="#{Establecimiento}" target="#{fac_puntoEmisionControlador.verCamposEstablecimiento}" />  
+				        </p:commandButton>  
+				    </p:column>  
+				  </p:dataTable>
+				</p:panel>  
+			</p:dialog>
+		</h:form>
+		<p:dialog header="Mensaje de confirmacion"  widgetVar="confirmation2" id="MensajConfirma" modal="true">
+			<p:panel id="blodialog">
+				<h:outputLabel value="Esta seguro que desea guardar el registro?"/><br/>
+				<h:panelGroup style=" font-size: 1.1em;font-weight:400; display: block; text-align: center;padding: 10px;">
+			    	<p:commandButton value="Yes" icon="ui-icon-check" oncomplete="confirmation2.hide(),bloquearPagina.hide()" onstart="bloquearPagina.show()" action="#{fac_puntoEmisionControlador.EventoBotonDetalle('Guardar')}" 
+						   		update=":frm1:listaspuntosEmision,:frm1:datosEmision,:frm1:growl" />  
+					<p:commandButton value="Not" icon="ui-icon-closethick" oncomplete="confirmation2.hide()" action="#{fac_puntoEmisionControlador.EventoBotonDetalle('botonCerrar')}" 
+							  	update=":frm1:listaspuntosEmision,:frm1:datosEmision,:frm1:growl" />    
+					<p:blockUI block="blodialog" widgetVar="bloquearPagina">  
+					       Actualizando Registro...<br />  
+						<p:graphicImage value="/imagenes/ajax-loader.gif"/>  
+					</p:blockUI>
+				</h:panelGroup>
+			</p:panel>
+		</p:dialog>
+		 <p:dialog header="Mensaje de confirmacion"  widgetVar="confirmation" id="MensajConfirma2" modal="true">
+	    	<p:panel id="blodialog2">
+		    	<h:outputLabel value="Esta seguro que desea Eliminar el registro por completo?"/><br/>
+		    	<h:panelGroup style=" font-size: 1.1em;font-weight:400; display: block; text-align: center;padding: 10px;">
+			    	<p:commandButton value="Yes" oncomplete="confirmation.hide(),bloquearPagina2.hide()" onstart="bloquearPagina2.show()" action="#{fac_puntoEmisionControlador.EliminarRegistros}" update=":frm1:growl,:frm1:listaspuntosEmision" />  
+				    <p:commandButton value="Not" oncomplete="confirmation.hide()" update=":frm1:listaspuntosEmision"  action="#{fac_puntoEmisionControlador.EventoBotonDetalle('No_Eliminar')}"/>    
+					<p:blockUI block="blodialog2" widgetVar="bloquearPagina2">  
+					       Eliminando Registro...<br />  
+						<p:graphicImage value="/imagenes/ajax-loader.gif"/>  
+					</p:blockUI>
+				</h:panelGroup>
+			</p:panel>
+		</p:dialog>
+	</ui:define>
+</ui:composition>
+</html>

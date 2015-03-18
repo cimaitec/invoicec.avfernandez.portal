@@ -1,0 +1,203 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/templates/cimaTemplate.xhtml">
+	<ui:define name="tituloPagina">
+		<h:outputText value="Facturas" />
+	</ui:define>
+
+	<ui:define name="tituloFormulario">
+		<h:outputText value="Usuarios" />
+	</ui:define>
+
+
+	<ui:define name="contenido">
+		<h:form id="frm1" action="frm1" method="post">
+
+			<p:remoteCommand name="onload"
+				action="#{facUsuarioEstablecimientoControlador.CargarDatos}"
+				autorun="true" update="datosUsuario,dtTable" />
+				<p:growl id="growl" showDetail="true" /> 
+			
+			<p:panel id="datosUsuario">
+			<p align="center"> 
+					<h:outputText value="Asignar Establecimiento"  styleClass="titulo"/>
+				</p>
+				<h:panelGrid columns="2" title="Usuarios Establecimiento">
+				
+				
+					<h:outputText value="Ruc Empresa" styleClass="label"/>
+					<h:panelGroup>
+						<p:selectOneMenu value="#{facUsuarioEstablecimientoControlador.ruc}" styleClass="text" disabled="#{facUsuarioEstablecimientoControlador.modificar}">
+							<f:selectItems value ="#{facUsuarioEstablecimientoControlador.li_Ruc}" >
+							</f:selectItems>
+							<p:ajax listener="#{facUsuarioEstablecimientoControlador.llenarCombos}" update=":frm1:datosUsuario"/>
+						</p:selectOneMenu>
+						<h:outputText value="*" style="color: #FF0000;"/>
+					</h:panelGroup>
+					
+					<h:outputText value="Usuario" styleClass="label"/>
+					<h:panelGroup>
+						<h:inputText id="txtUsuario" value="#{facUsuarioEstablecimientoControlador.codUsuario}"  readonly="true" />
+						<p:commandButton actionListener="#{facUsuarioEstablecimientoControlador.llenaComboUsuario()}" icon="ui-icon-circle-zoomin"	oncomplete="diaUsu.show()" 
+						disabled="#{facUsuarioEstablecimientoControlador.activarBtn}" update=":formDialogo:usuId,:frm1:growl"/>
+						<h:outputText value="*" style="color: #FF0000;"/>	
+					</h:panelGroup>
+
+					<h:outputText value="Establecimiento: " styleClass="label"  />
+					<h:panelGroup>
+						<h:inputText id="txtEstablecimiento" value="#{facUsuarioEstablecimientoControlador.codEstablecimiento}"  readonly="true" />
+						<p:commandButton actionListener="#{facUsuarioEstablecimientoControlador.llenaComboEstablecimiento()}" oncomplete="diaEst.show()"  
+							icon="ui-icon-circle-zoomin" disabled="#{facUsuarioEstablecimientoControlador.activarBtn}" update=":formDialogo:estId"/>
+						<h:outputText value="*" style="color: #FF0000;"/>
+					</h:panelGroup>
+
+					<h:outputText value="Tipo de Acceso" styleClass="label"/>
+					<p:selectOneMenu 
+						value="#{facUsuarioEstablecimientoControlador.tipoAcceso}">
+						<f:selectItems
+							value="#{facUsuarioEstablecimientoControlador.li_tiposAcceso}"></f:selectItems>
+					</p:selectOneMenu>
+
+					<p:commandButton value="Guardar" icon="ui-icon-disk"
+							update= ":frm1:datosUsuario,:frm1:dtTable" oncomplete="confirmation.show()"/>
+					<p:commandButton value="Limpiar" icon="ui-icon-arrowrefresh-1-e" action="#{facUsuarioEstablecimientoControlador.CargarDatos()}" 
+							update= ":frm1:datosUsuario,:frm1:dtTable"/>
+				</h:panelGrid>
+			</p:panel>
+			
+			<p:panel id="dtTable">
+				<p:dataTable var="facUsuarioEstablec"
+					value="#{facUsuarioEstablecimientoControlador.li_UEstablecimiento}"
+					paginator="true" rows="10"
+					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					rowsPerPageTemplate="5,10,15"  rowStyleClass="fila1">
+					<f:facet name="header">
+						<h:outputText value="Consulta de Usuario" styleClass="cabeceraTabla"/>
+					</f:facet>
+					<p:column>
+						<f:facet name="header">
+							<h:outputText value="RUC Empresa" />
+						</f:facet>
+						<h:outputText value="#{facUsuarioEstablec.id.ruc}" />
+					</p:column>
+					<p:column style="width:25%">
+						<f:facet name="header">
+							<h:outputText value="Codigo de Usuario" />
+						</f:facet>
+						<h:outputText value="#{facUsuarioEstablec.id.codUsuario}" />
+					</p:column>
+					<p:column style="width:35%">
+						<f:facet name="header">
+							<h:outputText value="Codigo de Establecimiento" />
+						</f:facet>
+						<h:outputText value="#{facUsuarioEstablec.id.codEstablecimiento}" />
+					</p:column>
+
+					<p:column style="width:20%">
+						<f:facet name="header">
+							<h:outputText value="Tipo de Acceso" />
+						</f:facet>
+						<h:outputText value="#{facUsuarioEstablec.tipoAcceso}" />
+					</p:column>
+					<p:column >
+						<f:facet name="header">
+							<h:outputText value="Estado" />
+						</f:facet>
+						<h:outputText value="#{facUsuarioEstablec.isActive}" />
+					</p:column>
+					<p:column>
+						<f:facet name="header">
+							<h:outputText value="Accion"  />
+						</f:facet>
+						<h:panelGrid columns="2">
+							<p:commandButton title="Borrar" icon="ui-icon-trash" oncomplete="confirmation2.show()" update=":frm1:dtTable">
+								<f:setPropertyActionListener target="#{facUsuarioEstablecimientoControlador.seleccionarCampos}" value="#{facUsuarioEstablec}" />
+							</p:commandButton>
+							<p:commandButton title="Modificar" icon="ui-icon-document" update=":frm1:dtTable,:frm1:datosUsuario"  action="#{facUsuarioEstablecimientoControlador.CargarDatosModificables}">
+								<f:setPropertyActionListener target="#{facUsuarioEstablecimientoControlador.seleccionarCampos}" value="#{facUsuarioEstablec}" />
+							</p:commandButton>
+						</h:panelGrid>
+					</p:column>
+				</p:dataTable>
+			</p:panel>
+		</h:form>
+	</ui:define>
+	<ui:define name="dialogo">
+		<h:form id="formDialogo">
+			<p:dialog header="Usuario" widgetVar="diaUsu" id="usuId" resizable="false" modal="true">
+				<p:panel>
+					<p:dataTable id="taUsu" var="usuario" 
+						value="#{facUsuarioEstablecimientoControlador.listfcliente}"
+						widgetVar="estTa" rowStyleClass="fila1"
+						filteredValue="#{facUsuarioEstablecimientoControlador.filtarcliente}"
+						styleClass="tabla">
+						<p:column headerText="Identificación" style="width:15%" filterBy="#{usuario.id.rucCliente}">
+							<h:outputText value="#{usuario.id.rucCliente}"/>
+						</p:column>
+						<p:column headerText="Razón Social" filterBy="#{usuario.razonSocial}">
+							<h:outputText value="#{usuario.razonSocial}"/>
+						</p:column>
+						<p:column headerText="Dirección" filterBy="#{usuario.direccion}">
+							<h:outputText value="#{usuario.direccion}"/>
+						</p:column>
+						<p:column headerText="Seleccionar"  style="width:3%">
+							<p:commandButton icon="ui-icon-check" title="Eliminar" oncomplete="diaUsu.hide()" action="#{facUsuarioEstablecimientoControlador.ubicarUsuario()}" update=":frm1:txtUsuario,:frm1:growl">
+								<f:setPropertyActionListener target="#{facUsuarioEstablecimientoControlador.selectcliente}" value="#{usuario}"></f:setPropertyActionListener>
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>
+				</p:panel>
+			</p:dialog>
+			<p:dialog header="Establecimineto" widgetVar="diaEst" id="estId" resizable="false" modal="true">
+				<p:panel>
+					<p:dataTable id="taEst" var="estab" value="#{facUsuarioEstablecimientoControlador.listEstablecimiento}"
+						widgetVar="estTa" rowStyleClass="fila1" filteredValue="#{facUsuarioEstablecimientoControlador.filtarEstabl}"
+						styleClass="tabla">
+						<p:column headerText="Establecimineto" 	filterBy="#{estab.id.codEstablecimiento}">
+							<h:outputText value="#{estab.id.codEstablecimiento}"/>
+						</p:column>
+						<p:column headerText="Seleccionar"  style="width:3%">
+							<p:commandButton icon="ui-icon-check" oncomplete="diaEst.hide()" action="#{facUsuarioEstablecimientoControlador.ubicarEstablecimiento()}"
+								update=":frm1:txtEstablecimiento,:frm1:growl">
+								<f:setPropertyActionListener target="#{facUsuarioEstablecimientoControlador.selectEstabl}" value="#{estab}"></f:setPropertyActionListener>
+							</p:commandButton>
+						</p:column>									
+					</p:dataTable>								
+				</p:panel>
+			</p:dialog>	
+		</h:form>
+	
+		<p:dialog header="Mensaje de confirmacion"  widgetVar="confirmation" id="mensajeConfirmacion" modal="true">
+	    	<p:panel id="blodialog">
+		    	<h:outputLabel value="Esta seguro que desea realizar los cambios?"/><br/>
+		    	<h:panelGroup style=" font-size: 1.1em;font-weight:400; display: block; text-align: center;padding: 10px;">
+			    	<p:commandButton value="Yes" oncomplete="confirmation.hide(),bloquearPagina.hide()" onstart="bloquearPagina.show()" action="#{facUsuarioEstablecimientoControlador.inserto('guardar')}" update=":frm1:datosUsuario,:frm1:dtTable,:frm1:growl" />  
+				    <p:commandButton value="Not" oncomplete="confirmation.hide()" update=":frm1:datosUsuario,:frm1:dtTable,:frm1:growl" />    
+					<p:blockUI block="blodialog" widgetVar="bloquearPagina">  
+					       Actualizando Registro...<br />  
+						<p:graphicImage value="/imagenes/ajax-loader.gif"/>  
+					</p:blockUI>
+				</h:panelGroup>
+			</p:panel>
+		</p:dialog>
+		<p:dialog header="Mensaje de confirmacion"  widgetVar="confirmation2" id="mensajeConfirmacion2" modal="true">
+	    	<p:panel id="blodialog2">
+		    	<h:outputLabel value="Esta seguro de eliminar el registro?"/><br/>
+		    	<h:panelGroup style=" font-size: 1.1em;font-weight:400; display: block; text-align: center;padding: 10px;">
+			    	<p:commandButton value="Yes" oncomplete="confirmation2.hide(),bloquearPagina2.hide()" onstart="bloquearPagina2.show()" action="#{facUsuarioEstablecimientoControlador.BorrarLiniea()}" update=":frm1:datosUsuario,:frm1:dtTable,:frm1:growl" />  
+				    <p:commandButton value="Not" oncomplete="confirmation2.hide()"  update=":frm1:datosUsuario,:frm1:dtTable,:frm1:growl" />    
+					<p:blockUI block="blodialog2" widgetVar="bloquearPagina2">  
+					       Actualizando Registro...<br />  
+						<p:graphicImage value="/imagenes/ajax-loader.gif"/>  
+					</p:blockUI>
+				</h:panelGroup>
+			</p:panel>
+		</p:dialog>
+	</ui:define>
+</ui:composition>
+</html>

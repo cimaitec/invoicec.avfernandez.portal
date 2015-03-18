@@ -1,0 +1,114 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/templates/cimaTemplate.xhtml">
+	<ui:define name="tituloPagina">
+		<h:outputText value="FORMULARIO FACTURA" />
+	</ui:define>
+	<ui:define name="paginaformulario">
+		<h:outputText value="FORMULARIO FACTURA" />
+	</ui:define>
+	<ui:define name="contenido">
+		<h:form id="formfact1">
+			<p:growl autoUpdate="true"/>
+			<p:panel id="panel1" header="FACTURA">
+				<h:panelGroup id="pagFecha">
+					<p:panelGrid columns="3">
+						<h:outputText value="No Factura: " />
+						<p:inputText value="#{facturaControlador1.numfactura}" id="txtNumFact" required="true" requiredMessage="Debe Ingresar el codigo"/>
+						<p:calendar value="#{facturaControlador1.fecha}" pattern="dd/MM/yyyy"/>
+					</p:panelGrid>
+				</h:panelGroup>
+				<h:panelGroup id="pagCliente">
+					<p:panelGrid columns="3">
+						<h:outputText value="Cedula: " />
+						<p:inputText value="#{facturaControlador1.cedula}" > 
+							<p:ajax event="blur" listener="#{facturaControlador1.buscarCliente}" update="pagCliente"/>
+						</p:inputText>
+					</p:panelGrid>
+					<p:panelGrid columns="2">
+						<h:outputText value="Nombre: " />
+						<h:outputText value="#{facturaControlador1.cliente.nombre}" />
+						<h:outputText value="Apellido: " />
+						<h:outputText value="#{facturaControlador1.cliente.apellido}" />
+						<h:outputText value="Direccion: " />
+						<h:outputText value="#{facturaControlador1.cliente.direccion}" />
+					</p:panelGrid>
+				</h:panelGroup>
+				<h:panelGroup id="pagLibro">
+					<p:panelGrid columns="3">
+						<h:outputText value="Codigo: " />
+						<p:inputText value="#{facturaControlador1.codigolibro}" > 
+							<p:ajax event="blur" listener="#{facturaControlador1.buscarLibro}" update="pagLibro"/>
+						</p:inputText>
+					</p:panelGrid>
+					<p:panelGrid columns="2">
+						<h:outputText value="Titulo: " />
+						<h:outputText value="#{facturaControlador1.libro.titulo}" />
+						<h:outputText value="Autor: " />
+						<h:outputText value="#{facturaControlador1.libro.autor.nombre} #{facturaControlador1.libro.autor.apellido}" />
+						<h:outputText value="Precio: " />
+						<h:outputText value="#{facturaControlador1.libro.precio}" />
+					</p:panelGrid>
+				</h:panelGroup>
+				<h:panelGroup id="pagCantidad">
+					<p:panelGrid columns="3">
+						<h:outputText value="Ingresar Cantidad: " />
+						<p:inputText value="#{facturaControlador1.cantidad}"/>
+						<p:commandButton action="#{facturaControlador1.ingresarCantidad}" value="INGRESAR" update=":formfact1:pagCantidad,:formfact1:pagDataDetalle,:formfact1:pagLibro"/>
+					</p:panelGrid>
+				</h:panelGroup>
+				<h:panelGroup id="pagDataDetalle">
+					<p:dataTable value="#{facturaControlador1.detalle}" var="det">
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Codigo" />
+							</f:facet>
+							<h:outputText value="#{det.libro.codigo}" />
+						</p:column>
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Nombre del Libro" />
+							</f:facet>
+							<h:outputText value="#{det.libro.titulo}" />
+						</p:column>
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Cantidad" />
+							</f:facet>
+							<h:outputText value="#{det.cantidad}" />
+						</p:column>
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Precio" />
+							</f:facet>
+							<h:outputText value="#{det.libro.precio}" />
+						</p:column>
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Subtotal" />
+							</f:facet>
+							<h:outputText value="#{det.subtotal}" />
+						</p:column>
+					</p:dataTable>
+					<h:panelGroup id="pagTotal">
+						<p:panelGrid columns="2">
+							<h:outputText value="Total de la Factura: " />
+							<h:outputText value="#{facturaControlador1.totalfactura}" />
+						</p:panelGrid>
+					</h:panelGroup>
+					<p:commandButton action="#{facturaControlador1.guardarRegistros}" value="GRABAR" update=":formfact1"/>
+				</h:panelGroup>
+				
+			</p:panel>
+		</h:form>
+	</ui:define>
+	<ui:define name="autor">
+		<h:outputText value="Grupo 2 - Bolivar Salazar" />
+	</ui:define>
+</ui:composition>
+</html>

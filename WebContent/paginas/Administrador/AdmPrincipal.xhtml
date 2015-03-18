@@ -1,0 +1,32 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	<ui:composition template="/templates/cimaTemplate.xhtml">
+		<ui:define name="tituloPagina">
+		<h:outputText value="Pagina Principal" />
+		</ui:define>
+
+		<ui:define name="tituloFormulario">
+			<h:outputText value="" />
+		</ui:define>
+		<ui:define name="contenido" >
+			<h:form id="frm1">
+				<p:panel header="Pagina principal">
+				<h:panelGrid columns="1" border="2">
+					<h2>Bienvenidos a CIMA IT</h2>
+					<br></br>
+					<p>
+						Para obtener más información acerca de DataExpress, visite <a href="http://www.cimait.com.ec/" title="Sitio web de CIMA IT">http://www.cimait.com.ec</a>.
+					</p>
+					<p>
+        				® erd/jmvg/cgm Derechos Reservados DataExpress. Diciembre 2012.
+        			</p>
+				</h:panelGrid>
+			</p:panel>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</html>

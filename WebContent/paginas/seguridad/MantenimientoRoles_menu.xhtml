@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	
+	<ui:composition template="/templates/cimaTemplate.xhtml">
+		<ui:define name="tituloPagina">
+			<h:outputText value=".::Roles-Menu::.s" />
+		</ui:define>
+
+		<ui:define name="tituloFormulario">
+			<h:outputText value="Roles-Menu" />
+		</ui:define>
+
+		<ui:define name="contenido">
+			<h:form id="frm1" action="frm1" method="post" >	
+				<p:growl id="growl" showDetail="true" />  
+				
+				<p:panel id="datosRoles">
+					<p:layout style="min-width:400px;min-height:400px;" id="layout123">
+						<p:layoutUnit position="west" id="panelControl">
+							<h:panelGrid columns="5" id="controlRol">
+								
+										<h:outputLabel value="Role:"/>
+										<p:inputText value="#{fac_roles_menu_controladores.cod_rol}" readonly="true">
+										</p:inputText>
+										<p:commandButton oncomplete="DetalleRol.show()" icon ="ui-icon-circle-zoomin" actionListener="#{fac_roles_menu_controladores.Cargar_Roles('arboles')}" update=":formDialog:detalleRoles,:frm1:datosRoles"
+											>
+										</p:commandButton>
+								
+										<h:outputLabel value="Descripcion"/>
+										<p:inputText value="#{fac_roles_menu_controladores.descripcion}" readonly="true"></p:inputText>
+										<br />
+										
+										<p:commandButton value="Actualizar Rol" icon="ui-icon-disk" oncomplete="confirmation.show()" update=":frm1:controlRol"  
+												action="#{fac_roles_menu_controladores.Cargar_Roles('actualizar')}">
+										</p:commandButton>										
+							</h:panelGrid>
+						</p:layoutUnit>
+						<p:layoutUnit position="center" id="paneldelArbol" >
+							<p:tree value="#{fac_roles_menu_controladores.arbolOpciones}" 
+									selectionMode="checkbox" id="treePerfil" var="node"  cache="false"                                                      
+		                            selection="#{fac_roles_menu_controladores.selectedNodes}">
+		                        <p:treeNode >
+		                            <h:outputText value="#{node}"/>
+		                        </p:treeNode>
+							</p:tree> 
+					    </p:layoutUnit>
+				    </p:layout>  
+				</p:panel>
+			</h:form>
+		</ui:define>
+		<ui:define name="dialogo">
+			<h:form id="formDialog">
+			    <p:dialog header="Detalle Roles" widgetVar="DetalleRol" id="detalleRoles" draggable="false" resizable="false" modal="true">
+			    	<p:panel>
+			    	 <p:dataTable id="Roles" var="roles" rows="10" value="#{fac_roles_menu_controladores.cargarDetalleRol}" 
+			    	  emptyMessage="No se encuentra el registro filtrado" widgetVar="rolTable" filteredValue="#{fac_roles_menu_controladores.filteredRol}">                      
+					      <p:column headerText="Codigo" sortBy="#{roles.codRol}" filterBy="#{roles.codRol}">
+									<h:outputText value="#{roles.codRol}" />
+						  </p:column>
+						  <p:column headerText="Descripcion" sortBy="#{roles.descripcion}" filterBy="#{roles.descripcion}">
+									<h:outputText value="#{roles.descripcion}" />
+						  </p:column>
+					  	  <p:column headerText="Seleccionar">  
+			                  <p:commandButton icon="ui-icon-check" oncomplete="DetalleRol.hide()" update=":frm1:controlRol,:frm1:treePerfil,:frm1:datosRoles" action="#{fac_roles_menu_controladores.seleccionarRol}">
+			                  	<f:setPropertyActionListener value="#{roles}" target="#{fac_roles_menu_controladores.verCampos}" />  
+			                  </p:commandButton>  
+			              </p:column>  
+					  </p:dataTable>
+					 </p:panel>  
+			    </p:dialog>
+			</h:form>
+		
+  			<p:dialog header="Mensaje de confirmacion"  widgetVar="confirmation" id="mensajeConfirmacion" modal="true">
+		    	<p:panel id="blodialog">
+			    	<h:outputLabel value="Esta seguro que desea realizar los cambios?"/><br/>
+			    	<h:panelGroup style=" font-size: 1.1em;font-weight:400; display: block; text-align: center;padding: 10px;">
+				    	<p:commandButton value="Yes" oncomplete="confirmation.hide(),bloquearPagina.hide()" onstart="bloquearPagina.show()" action="#{fac_roles_menu_controladores.GuardarDatos('guardar')}" update=":frm1:controlRol,frm1:growl,frm1:treePerfil,:frm1:datosRoles" />  
+					    <p:commandButton value="Not" oncomplete="confirmation.hide()" action="#{fac_roles_menu_controladores.GuardarDatos('cancelar')}" update=":frm1:controlRol,frm1:growl,frm1:treePerfil,:frm1:datosRoles" />    
+						<p:blockUI block="blodialog" widgetVar="bloquearPagina">  
+						       Actualizando Registro...<br />  
+							<p:graphicImage value="/imagenes/ajax-loader.gif"/>  
+						</p:blockUI>
+					</h:panelGroup>
+				</p:panel>
+			</p:dialog>
+		</ui:define>
+	</ui:composition>
+</html>

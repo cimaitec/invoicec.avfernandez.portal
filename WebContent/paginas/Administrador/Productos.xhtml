@@ -1,0 +1,297 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	<head>
+	<script language="JavaScript">
+	 function cargaInformacion(){
+	      var element = document.getElementById("lblPorcentaje");
+          element.style.display = 'none';
+          alert("HOLA Info");
+          
+	  }
+	</script>
+	</head>
+	<ui:composition template="/templates/cimaTemplate.xhtml">
+		<ui:define name="tituloPagina">
+			<h:outputText value=".::Productos::." />
+		</ui:define>
+	
+		<ui:define name="tituloFormulario">
+			<h:outputText value="Productos" />
+		</ui:define>
+	
+		<ui:define name="contenido">
+			<h:form id="frm1" action="frm1" method="post">
+				<p:remoteCommand name="onload"
+				action="#{fac_ProductosControlador.cargarDatos}" autorun="true"
+				update="datosProducto,DatosComando,DetalleProductos" />
+				<p:growl id="growl" showDetail="true" sticky="true" />
+				<p:growl id="msgs" showDetail="true" />  
+				
+				<p:panel id="datosProducto">
+					<p:panelGrid title="Mantenimiento de Empresea emisora" style="margin: 0 auto;">
+						<p:row>
+							<p:column colspan="4">
+								<center>
+									<h:outputText value="Datos del Productos" styleClass="titulo"/>
+								</center>
+							</p:column>
+						</p:row>
+						<p:row>
+							<p:column>
+								<h:outputText value="Cod. Auxiliar :" styleClass="label"/>
+							</p:column>
+							<p:column>
+								<h:inputText id="txtcodAuxiliar" value="#{fac_ProductosControlador.cod_auxiliar}" style="text-align: right;"  styleClass="text" converterMessage="Solo Numero">
+									<p:ajax event="change" update=":frm1:growl" />
+								</h:inputText>
+							</p:column>
+							<p:column>
+								<h:outputText value="Tipo producto :" styleClass="label"/>
+							</p:column>
+							<p:column>
+								<h:panelGroup>
+									<p:selectOneMenu value="#{fac_ProductosControlador.tipoProducto}" >
+										<f:selectItems value="#{fac_ProductosControlador.listaproductos}" ></f:selectItems>
+										<p:ajax event="change" listener="#{fac_ProductosControlador.pruebas}"  update=":frm1:datosProducto" />										
+										<!--  <p:ajax event="change" listener="#{fac_ProductosControlador.pruebas}" />-->
+									</p:selectOneMenu>
+									<h:outputText value="*" style="color: #FF0000;"/>
+								</h:panelGroup>
+							</p:column>
+						</p:row>
+						<p:row>
+							<p:column>
+								<h:outputText value="Descripción :" styleClass="label"/>
+							</p:column>
+							<p:column colspan="3">
+								<h:panelGroup>
+									<h:inputText value="#{fac_ProductosControlador.descripcion}" size="100" maxlength="300" />
+									<h:outputText value="*" style="color: #FF0000;"/>
+								</h:panelGroup>
+							</p:column>
+						</p:row>
+						<p:row rendered="#{fac_ProductosControlador.flagPorcentaje}">
+							
+								<p:column>
+									<h:outputText id="lblPorcentaje" value="Porcentaje :"  styleClass="label"/>
+								</p:column>
+								<p:column colspan="3">
+									<h:panelGroup>
+										<h:inputText id="txtPorcentaje" value="#{fac_ProductosControlador.porcentaje}" size="100" maxlength="50" />
+										<h:outputText id="lblPorcentaje2" value="*" style="color: #FF0000;"/>
+									</h:panelGroup>
+								</p:column>
+							
+						</p:row>
+						<p:row rendered="#{fac_ProductosControlador.flagIce}">
+							<p:column>
+								<h:outputText value="Valor unitario :" styleClass="label"/>
+							</p:column>
+							<p:column>
+								<h:panelGroup>
+									<h:inputText id="txtValorunitario" value="#{fac_ProductosControlador.valorUni}" style="text-align: right;" styleClass="text" validatorMessage="Solo numero entero">
+										<p:ajax event="keyup" update=":frm1:growl" />
+									</h:inputText>
+									<h:outputText value="*" style="color: #FF0000;"/>
+								</h:panelGroup>
+							</p:column>
+							<p:column>
+								<h:outputText value="Tipo IVA :" styleClass="label"/>
+							</p:column>
+							<p:column>
+								<h:panelGroup>
+									<h:inputText size="5"  value="#{fac_ProductosControlador.tipoiva}" disabled="true"></h:inputText>
+									<h:inputText size="20" value="#{fac_ProductosControlador.tipoIvaDescripcion}" disabled="true"></h:inputText>
+									<p:commandButton icon="ui-icon-circle-zoomin" oncomplete="ImpuestosW.show()" actionListener="#{fac_ProductosControlador.CargarImpuestos('IVA')}" update=":formdialog:ImpuestosId" />
+									<h:outputText value="*" style="color: #FF0000;"/>
+								</h:panelGroup>
+							</p:column>
+						</p:row>
+						<p:row rendered="#{fac_ProductosControlador.flagIce}">
+							
+							<p:column>
+								<h:outputText value="Tipo ICE :" styleClass="label"/>
+							</p:column>
+							<p:column colspan="3">
+								<h:panelGroup>
+									<h:inputText size="5" value="#{fac_ProductosControlador.tipoICE}" disabled="true"></h:inputText>
+									<h:inputText size="80" value="#{fac_ProductosControlador.tipoICEDescripcion}" disabled="true"></h:inputText>
+									<p:commandButton icon="ui-icon-circle-zoomin" oncomplete="ImpuestosW.show()" actionListener="#{fac_ProductosControlador.CargarImpuestos('ICE')}" update=":formdialog:ImpuestosId" />
+								</h:panelGroup>
+							</p:column>
+							
+						</p:row>
+						<p:row>
+							<p:column colspan="4">
+								<center>
+									<h:outputText value="Datos Adicionales del producto" styleClass="titulo" style=" text-align: center;"/>
+								</center>
+							</p:column>
+						</p:row>
+						<p:row>
+							<p:column>
+								<h:outputText value="Atributo 1:" styleClass="label"/>
+							</p:column>
+							<p:column>
+								<h:inputText value="#{fac_ProductosControlador.atributo1}" styleClass="text" />
+							</p:column>
+							<p:column>
+								<h:outputText value="Valor Atributo 1:" styleClass="label"/>
+							</p:column>
+							<p:column>
+								<h:inputText value="#{fac_ProductosControlador.VAtributo1}" styleClass="text" />
+							</p:column>
+						</p:row>
+						<p:row>
+							<p:column>
+								<h:outputText value="Atributo 2:" styleClass="label"/>
+							</p:column>
+							<p:column>
+								<h:inputText value="#{fac_ProductosControlador.atributo2}" styleClass="text" />
+							</p:column>
+							<p:column>
+								<h:outputText value="Valor Atributo 2:" styleClass="label"/>
+							</p:column>
+							<p:column>
+								<h:inputText value="#{fac_ProductosControlador.VAtributo2}" styleClass="text" />
+							</p:column>
+						</p:row>
+						<p:row>
+							<p:column>
+								<h:outputText value="Atributo 3:" styleClass="label"/>
+							</p:column>
+							<p:column>
+								<h:inputText value="#{fac_ProductosControlador.atributo3}" styleClass="text" />
+							</p:column>
+							<p:column>
+								<h:outputText value="Valor Atributo 3:" styleClass="label"/>
+							</p:column>
+							<p:column>
+								<h:inputText value="#{fac_ProductosControlador.VAtributo3}" styleClass="text" />
+							</p:column>
+						</p:row>
+					</p:panelGrid>
+				</p:panel>
+				<p:panel id="DatosComando">
+					 <h:panelGrid columns="5" title="DETALLE" style="align:CENTER"> 
+						<p:commandButton value="Guardar" icon="ui-icon-disk"  action="#{fac_ProductosControlador.AccionBoton('MensajeDialog')}" update=":frm1:datosProducto,:frm1:DetalleProductos,:frm1:DatosComando" oncomplete="confirmation.show()"  
+							/>
+						<p:commandButton value="Limpiar" icon="ui-icon-arrowrefresh-1-e" action="#{fac_ProductosControlador.AccionBoton('Actualizar')}" update=":frm1:datosProducto,:frm1:DetalleProductos"
+							/>
+					</h:panelGrid>
+				</p:panel>
+				<p:panel id="DetalleProductos">
+					<p:dataTable var="productos"
+						value="#{fac_ProductosControlador.tablaproductos}"
+						paginator="true" rows="10"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						rowsPerPageTemplate="5,10,15" rowStyleClass="fila1"
+						filteredValue="#{fac_ProductosControlador.filtroproductos}">
+						<f:facet name="header">
+							<h:outputText value="Detalle producto" styleClass="cabeceraTabla" />
+						</f:facet>
+						<p:column>
+							<f:facet name="header" >
+								<h:outputText value="Codigo"/>
+							</f:facet>
+							<h:outputText value="#{productos.cod_producto}" />
+						</p:column>
+						<p:column filterBy="#{productos.cod_adicional}">
+							<f:facet name="header">
+								<h:outputText value="Codigo Auxiliar" />
+							</f:facet>
+							<h:outputText value="#{productos.cod_adicional}" />
+						</p:column>
+						<p:column filterBy="#{productos.tipoProductoDEscrip}">
+							<f:facet name="header">
+								<h:outputText value="Tipo producto" />
+							</f:facet>
+							<h:outputText value="#{productos.tipoProductoDEscrip}" />
+						</p:column>
+						<p:column filterBy="#{productos.descripcion}">
+							<f:facet name="header">
+								<h:outputText value="Descripción" />
+							</f:facet>
+							<h:outputText value="#{productos.descripcion}" />
+						</p:column>
+						<p:column filterBy="#{productos.porcentaje}">
+							<f:facet name="header">
+								<h:outputText value="Porcentaje" />
+							</f:facet>
+							<h:outputText value="#{productos.porcentaje}" />
+						</p:column>
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Valor Unitario" />
+							</f:facet>
+							<h:outputText value="#{productos.valorUnitario}" style="text-align: right;"/>
+						</p:column>
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="IVA" />
+							</f:facet>
+							<h:outputText value="#{productos.tipoIvadescrip}" />
+						</p:column>
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="ICE" />
+							</f:facet>
+							<h:outputText value="#{productos.codIcedescrip}" />
+						</p:column>
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Acción" />
+							</f:facet>
+							<p:commandButton title="Modificar" icon="ui-icon-document" action="#{fac_ProductosControlador.AccionBoton('Modificar')}" update=":frm1:datosProducto,:frm1:DetalleProductos">
+								<f:setPropertyActionListener target="#{fac_ProductosControlador.seleccionatablaproducto}" value="#{productos}" />
+							</p:commandButton>
+						</p:column>
+				 	</p:dataTable>
+				</p:panel>
+			</h:form>
+		</ui:define>
+		<ui:define name="dialogo">
+			<h:form id="formdialog">
+				<p:dialog header="Impuestos" widgetVar="ImpuestosW"  id="ImpuestosId" draggable="false" resizable="false" modal="true">
+					<p:panel>
+			    	 <p:dataTable id="ImpuestosDT" emptyMessage="No se encuentra el registro filtrado" rows="10" paginator="true" var="Impues" value="#{fac_ProductosControlador.listaimpuestos}" widgetVar="ImpuestosTable" filteredValue="#{fac_ProductosControlador.filtrosimpuestos}">                      
+					      <p:column headerText="Codigo" sortBy="#{Impues.codUnico}" filterBy="#{Impues.codUnico}">
+									<h:outputText value="#{Impues.codUnico}" />
+						  </p:column>
+					      <p:column headerText="Descripción" sortBy="#{Impues.descripcion}" filterBy="#{Impues.descripcion}">
+									<h:outputText value="#{Impues.descripcion}" />
+						  </p:column>
+					      <p:column headerText="Porcentaje" sortBy="#{Impues.porcentaje}" filterBy="#{Impues.porcentaje}">
+									<h:outputText value="#{Impues.porcentaje}" />
+						  </p:column>
+					  	  <p:column headerText="Seleccionar">  
+			                  <p:commandButton icon="ui-icon-check" oncomplete="ImpuestosW.hide()" action="#{fac_ProductosControlador.CargarImpuestosseleccion}"	update=":frm1:datosProducto">
+			                  	<f:setPropertyActionListener value="#{Impues}" target="#{fac_ProductosControlador.verCamposImpuestos}" />  
+			                  </p:commandButton>  
+			              </p:column>  
+					  </p:dataTable>
+					</p:panel>  
+		     	</p:dialog>
+			</h:form>
+			<p:dialog header="Mensaje de confirmacion"  widgetVar="confirmation" id="MensajConfirma" modal="true">
+				 <p:panel id="blodialog">
+					<h:outputLabel value="Esta seguro que desea guardar el registro?"/><br/>
+					<h:panelGroup style=" font-size: 1.1em;font-weight:400; display: block; text-align: center;padding: 10px;">
+						<p:commandButton value="Yes" icon="ui-icon-check" oncomplete="confirmation.hide(),bloquearPagina.hide()" onstart="bloquearPagina.show()" action="#{fac_ProductosControlador.AccionBoton('Guardar')}" 
+							   		update=":frm1:datosProducto,:frm1:DetalleProductos,:frm1:DatosComando,:frm1:msgs" />  
+						<p:commandButton value="Not" icon="ui-icon-closethick" oncomplete="confirmation.hide()" action="#{fac_ProductosControlador.AccionBoton('botonCerrar')}" 
+								  	update=":frm1:datosProducto,:frm1:DetalleProductos,:frm1:DatosComando,:frm1:msgs" />    
+						<p:blockUI block="blodialog" widgetVar="bloquearPagina">  
+						       Guardando/modificando...<br />  
+							<p:graphicImage value="/imagenes/ajax-loader.gif"/>  
+						</p:blockUI>
+					</h:panelGroup>
+				</p:panel>
+			</p:dialog>		
+		</ui:define>
+	</ui:composition>
+</html>

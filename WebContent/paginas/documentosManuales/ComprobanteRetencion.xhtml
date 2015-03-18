@@ -1,0 +1,351 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	
+
+	
+    <ui:composition template="/templates/cimaTemplate.xhtml">
+		<ui:define name="tituloPagina">
+			<h:outputText value=".::Retenciones::." />
+		</ui:define>
+	
+		<ui:define name="tituloFormulario">
+			<h:outputText value="Retenciones" />
+		</ui:define>
+	
+		<ui:define name="contenido" >
+			<h:form id="frm1" action="frm1" >
+				 <p:remoteCommand  name="onload" action="#{comprobanteRetencionControlador.CargarDatos}" autorun="true" 
+				 update="datosEmisorPanel,CabeceraDocumentoPanel,InfoCompradorPanel,InfoDocumentoRetenidoPanel,detalleDocumentoPanel,detallesAdicionalesPanel"  />	       	       	       	
+       			<p:growl id="growl" showDetail="true" /> 
+       				
+       				 <p:panel id="datosEmisorPanel" >
+						    <h:outputText styleClass="titulo" value="INFORMACIóN TRIBUTARIA" />
+					     	<h:panelGrid id="pnInfoTrib" columns="6" title="Información del Emisor" >
+					               			
+									<h:outputText styleClass="label" value="Ruc:" />
+									<h:outputText styleClass="text" value="#{comprobanteRetencionControlador.empresa.ruc}" /> 
+									
+									<h:outputText  styleClass="label" value="Nombre Comercial:"/>
+									<h:outputText  styleClass="text" value="#{comprobanteRetencionControlador.empresa.razonComercial}"/>
+									
+									<h:outputText   styleClass="label"  value="Razón Social:" />
+									<h:outputText   styleClass="text" value="#{comprobanteRetencionControlador.empresa.razonSocial}" />
+									
+									<h:outputText   styleClass="label" value="Dirección Matríz:" />
+									<h:outputText   styleClass="text"  value="#{comprobanteRetencionControlador.empresa.direccionMatriz}" />
+									
+									<h:outputText  styleClass="label" value="Contribuyente Especial:" />
+									<h:outputText  styleClass="text"  value="#{comprobanteRetencionControlador.empresa.contribEspecial}" />
+									
+									<h:outputText   styleClass="label" value="Obligado Contabilidad:" />
+									<h:outputText styleClass="text" value="#{comprobanteRetencionControlador.empresa.obligContabilidad}" />
+					          </h:panelGrid>
+					  </p:panel>
+					  <p:panel id="CabeceraDocumentoPanel" >
+					    <h:outputText styleClass="titulo" value="#{comprobanteRetencionControlador.tipoDocumento}" />
+					       <h:panelGrid columns="6" title="Cabecera Factura" id="cabFactura">
+					       		<h:outputText styleClass="label" value="Establecimiento:" />
+					       			<h:panelGroup>
+										<p:inputText styleClass="text" value="#{comprobanteRetencionControlador.codEstablecimiento}" disabled="true">
+										</p:inputText>
+					    				<p:commandButton id="Establecimeinto123" oncomplete="establecimientosW.show()" icon ="ui-icon-circle-zoomin" actionListener="#{comprobanteRetencionControlador.llenaEstablecimientos}" 
+					    					update=":formdialog:EstablecimientosID,:frm1:CabeceraDocumentoPanel,:frm1:InfoCompradorPanel,:frm1:InfoDocumentoRetenidoPanel,:frm1:detalleDocumentoPanel">
+										</p:commandButton>
+										<h:outputText value="*" style="color: #FF0000;"/>				
+									</h:panelGroup>	
+									
+									<h:outputText styleClass="label" value="Punto Emisión:" />					
+									<h:panelGroup>
+										<p:inputText styleClass="text" value="#{comprobanteRetencionControlador.puntoEmision}" disabled="true">
+										</p:inputText>
+				    					<p:commandButton oncomplete="puntosEmisionW.show()" icon ="ui-icon-circle-zoomin" actionListener="#{comprobanteRetencionControlador.llenaPuntosEmision}" disabled="#{comprobanteRetencionControlador.visibleBotonEmision}"
+				    								update=":formdialog:puntosEmisionId,:frm1:CabeceraDocumentoPanel,:frm1:InfoCompradorPanel,:frm1:InfoDocumentoRetenidoPanel,:frm1:detalleDocumentoPanel">
+										</p:commandButton>
+									<h:outputText value="*" style="color: #FF0000;"/>
+									</h:panelGroup>	
+										
+									 <h:outputText styleClass="label" value="Secuencial:" />
+									 <h:outputText styleClass="text" value="#{comprobanteRetencionControlador.secuencial}" />
+																					
+									<h:outputText styleClass="label" value="Tipo Documento:" />
+									<h:outputText styleClass="text" value="#{comprobanteRetencionControlador.tipoDocumento}" />
+			          
+			          	            <h:outputText styleClass="label" value="Tipo Emisión:" />
+			          	            <h:panelGroup>
+										<p:selectOneMenu value="#{comprobanteRetencionControlador.tipoEmision}" >
+										   	<f:selectItems value="#{comprobanteRetencionControlador.litipoEmision}" />
+										</p:selectOneMenu>
+										<h:outputText value="*" style="color: #FF0000;"/>
+									</h:panelGroup>					
+									
+									<h:outputText styleClass="label" value="Fecha de Emision:" />
+									<h:panelGroup>
+										<p:calendar value="#{comprobanteRetencionControlador.fechaDeEmision}" id="popupCal"  pattern="dd/MM/yyyy"/>  
+										<h:outputText value="*" style="color: #FF0000;"/>
+									</h:panelGroup>
+									
+									<h:outputText styleClass="label" value="Periodo Fiscal:" />
+									<h:panelGroup>
+										<p:inputMask styleClass="text" value="#{comprobanteRetencionControlador.periodoFiscal}" mask="99/9999" /> 
+				 						<h:outputText value="*" style="color: #FF0000;"/>
+			 						</h:panelGroup>
+					 	   </h:panelGrid>
+					  </p:panel>
+					  <p:panel id="InfoCompradorPanel" >
+					    <h:outputText styleClass="titulo"  value="INFORMACION DEL SUJETO RETENIDO" />
+					      	<h:panelGrid columns="6" title="Informacion del Sujeto Retenido" id="infoComprador">
+								<h:outputText styleClass="label"  value="Tipo Identificación:" />
+								<h:panelGroup>
+									<p:selectOneMenu value="#{comprobanteRetencionControlador.tiposujetoRetenido}" id="cmbTipoComp"  >
+									   	<f:selectItems value="#{comprobanteRetencionControlador.tipossujetoRetenido}" />
+									   	<p:ajax event="change" value="#{comprobanteRetencionControlador.tiposujetoRetenido}"   update=":frm1:cmbTipoComp,:frm1:iptIdentifComp" />						   							   	
+									</p:selectOneMenu>
+									<h:outputText value="*" style="color: #FF0000;"/>
+								</h:panelGroup>
+								
+								<h:outputText styleClass="label" value="Identificación del Sujeto Retenido:"   />
+								<h:panelGroup>
+									<p:autoComplete value="#{comprobanteRetencionControlador.identificacionDelsujetoRetenido}" id="iptIdentifComp"  
+										completeMethod="#{comprobanteRetencionControlador.complete_RucComprador(comprobanteRetencionControlador.identificacionDelsujetoRetenido)}" >
+										<p:ajax event="blur" listener="#{comprobanteRetencionControlador.buscarSujetoRetenido}"   update=":frm1:iptIdentifComp,:frm1:pnGDatosComp,:frm1:growl" />
+									</p:autoComplete>
+									<h:outputText value="*" style="color: #FF0000;"/>
+								</h:panelGroup>
+									
+								<h:panelGroup id="pnGDatosComp">
+									<h:outputText styleClass="label" value="Razón Social/Apellidos y Nombres:" />
+			                        <br />						
+									<h:inputText styleClass="text" value="#{comprobanteRetencionControlador.razonSocial}" disabled="#{comprobanteRetencionControlador.presenta}" size="60" />
+			                        <br /> 
+									<h:outputText styleClass="label" value="Dirección Establecimiento:" />
+			                        <br />						
+									<h:inputText styleClass="text" value="#{comprobanteRetencionControlador.direccionEstablecimiento}" disabled="#{comprobanteRetencionControlador.presenta}" size="60" />
+			                        <br />
+									<h:outputText styleClass="label" value="Correo Electrónico:" />
+			                        <br />						
+									<h:inputText  styleClass="text"  value="#{comprobanteRetencionControlador.correoElectronico}" disabled="#{comprobanteRetencionControlador.presenta}" size="60" />
+			                        <br />
+									<h:outputText styleClass="label" value="Teléfono:" />
+			                        <br />						
+									<h:inputText  styleClass="text" value="#{comprobanteRetencionControlador.telefono}" disabled="#{comprobanteRetencionControlador.presenta}" size="20" />
+			                   </h:panelGroup>				
+					        </h:panelGrid>
+					    </p:panel>
+					    <p:panel id="InfoDocumentoRetenidoPanel">
+					    	<h:outputText styleClass="titulo"  value="INFORMACION DEL SUJETO RETENIDO" />
+					    	<h:panelGrid columns="6" title="Informacion del Documento Retenido" id="infoDocumentoRetenido">
+					    			
+					    			<h:outputText styleClass="label" value="No.de Comprobante:" />
+					    			<h:panelGroup>
+										<p:inputMask styleClass="text" value="#{comprobanteRetencionControlador.noComprobante}" size="25" mask="999-999-999999999"   /> 			
+						    			<h:outputText value="*" style="color: #FF0000;"/>
+					    			</h:panelGroup>
+					    			
+					    			<h:outputText styleClass="label" value="Fecha Emisión:" />
+					    			<h:panelGroup>
+										<p:calendar value="#{comprobanteRetencionControlador.fechaComprobante}" id="popfechaEmision"  pattern="dd/MM/yyyy"/>
+						    			<h:outputText value="*" style="color: #FF0000;"/>
+					    			</h:panelGroup>
+					    	</h:panelGrid>
+					    </p:panel>
+					    <p:panel id="detalleDocumentoPanel" >
+						    <h:panelGrid columns="4" title="DETALLE" style="align:CENTER"> 
+						       <p:commandButton value="Detalle" icon="ui-icon-circle-plus"
+												action="#{comprobanteRetencionControlador.nuevoDetalle}" update=":frm1:dtDetalle,:frm1:growl"  > 
+							   </p:commandButton>
+						 
+						       <p:commandButton value="Detalle Adicional" icon="ui-icon-circle-plus"
+												action="#{comprobanteRetencionControlador.nuevoDetalleAdicional}" update=":frm1:detallesAdicionalesPanel,:frm1:growl"  > 
+								</p:commandButton>
+								
+								<p:commandButton value="Guardar" icon="ui-icon-disk" oncomplete="confirmation.show()" 
+												update=":frm1:detalleDocumentoPanel,:frm1:CabeceraDocumentoPanel,:frm1:growl,:frm1:InfoCompradorPanel,:frm1:detallesAdicionalesPanel,:frm1:InfoDocumentoRetenidoPanel" /> 
+						     </h:panelGrid>
+								<p:dataTable id="dtDetalle"
+										   	 value="#{comprobanteRetencionControlador.listPantallaDetalleDocumento}"
+											 var="detalleDocumento"
+											 binding="#{comprobanteRetencionControlador.seleccionDetalleDocumento2}"
+											 paginator="true" 
+											 rows="10"  
+						                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+						                     rowsPerPageTemplate="5,10,15">
+									<p:column>
+										<f:facet name="header">
+											<h:outputText value="Linea" />
+										</f:facet>
+											<h:outputText value="#{detalleDocumento.linea}" />
+									</p:column>
+									<p:column>
+										<f:facet name="header">
+											<h:outputText value="Codigo Impuesto" />
+										</f:facet>
+										<p:selectOneMenu value="#{detalleDocumento.cod_impuesto}" >
+											   	<f:selectItems value="#{comprobanteRetencionControlador.list_cod_impuesto}" />
+											   	<p:ajax event="change" listener="#{comprobanteRetencionControlador.calculaTotal('borraCampo')}"   update=":frm1:detalleDocumentoPanel" />
+										</p:selectOneMenu>
+									</p:column>
+									<p:column>
+										<f:facet name="header">
+											<h:outputText  value="Codigo Porcentaje" />
+										</f:facet>
+										<h:panelGroup>
+											<h:inputText styleClass="text" value="#{detalleDocumento.cod_porcentaje}" disabled="true"/>
+											<p:commandButton oncomplete="cod_porcentajeImpiuestoW.show()" icon ="ui-icon-circle-zoomin" actionListener="#{comprobanteRetencionControlador.calculaTotal('llenarcodporcentaje')}" 
+											update=":formdialog:cod_porcentajeImpiuestoId,:frm1:detalleDocumentoPanel,:frm1:CabeceraDocumentoPanel,:frm1:InfoCompradorPanel,:frm1:detallesAdicionalesPanel,:frm1:InfoDocumentoRetenidoPanel" 
+															disabled="#{detalleDocumento.visibleBoton}">
+													<f:setPropertyActionListener value="#{detalleDocumento}" target="#{comprobanteRetencionControlador.seleccionDetalleDocumento}" /> 
+											</p:commandButton>
+										 </h:panelGroup>
+									</p:column>
+									<p:column>
+										<f:facet name="header">
+											<h:outputText  value="Descripción" />
+										</f:facet>
+										<h:outputText styleClass="text" value="#{detalleDocumento.cod_descripcion}" />
+									</p:column>
+									<p:column>
+										<f:facet name="header">
+											<h:outputText value="Base Imponible"  />
+										</f:facet>
+										<h:inputText styleClass="text" style="text-align: right;" value="#{detalleDocumento.valorBaseImp}" requiredMessage="Base Imponible Requerida" required="true"  autocomplete="0">
+											<p:ajax event="change" listener="#{comprobanteRetencionControlador.calculaTotal('RealizandoCalculo')}"   update=":frm1:detalleDocumentoPanel,:frm1:growl" />
+										</h:inputText>
+									</p:column>
+									<p:column>
+										<f:facet name="header">
+											<h:outputText value="Porcentaje" />
+										</f:facet>
+										<h:outputText styleClass="text" value="#{detalleDocumento.porcentajeRetencion}" />
+									</p:column>
+									<p:column>
+										<f:facet name="header">
+											<h:outputText value="Total" />
+										</f:facet>
+										<h:outputText styleClass="text" value="#{detalleDocumento.valorTotal}" />
+									</p:column>
+									<p:columnGroup type="footer">  
+							           <p:row>  
+							               <p:column colspan="6" footerText="Totales:" 
+							                               style="text-align:right"  />
+							               <p:column footerText="#{comprobanteRetencionControlador.valorTotal_impuesto}" />  
+							  		   </p:row>  
+							        </p:columnGroup> 
+							        <p:column>
+						                <f:facet name="header">
+						                    <h:outputText value="Acción" />
+						                </f:facet>
+						                <p:commandButton title="Borrar" action="#{comprobanteRetencionControlador.BorrarLineaDetAdicional('DetalleImpuesto')}" update=":frm1:detalleDocumentoPanel" icon="ui-icon-trash"
+						                	/>
+						             </p:column>					
+								</p:dataTable>
+					  	</p:panel>
+					    <p:panel id="detallesAdicionalesPanel" >					
+							<h:outputText styleClass="titulo" value="Detalles Adicionales" />
+							<p:dataTable id="dtDetalleAd"
+										 value="#{comprobanteRetencionControlador.listPantallaDetalleAdicional}"
+										 var="detalleAdicional"
+										 paginator="true" 
+										 rows="10"
+						                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+						                 rowsPerPageTemplate="5,10,15">
+									<p:column>
+										<f:facet name="header">
+											<h:outputText value="Nombre" />
+										</f:facet>
+										<h:inputText styleClass="text" value="#{detalleAdicional.nombre}" requiredMessage="Nombre Requerido" required="true"  style="width:100%" maxlength="300" />
+									</p:column>
+									<p:column>
+										<f:facet name="header">
+											<h:outputText value="Descripción" />
+										</f:facet>
+										<h:inputText styleClass="text" value="#{detalleAdicional.valor}" requiredMessage="Valor Requerido" required="true"  style="width:100%" maxlength="300" />									
+									</p:column>
+									<p:column>
+						                <f:facet name="header">
+						                    <h:outputText value="Acción" />
+						                </f:facet>
+						                <p:commandButton value="Borrar" action="#{comprobanteRetencionControlador.BorrarLineaDetAdicional('Detalleadicional')}" update=":frm1:detallesAdicionalesPanel" icon="ui-icon-trash" >
+						                	<f:setPropertyActionListener value="#{detalleAdicional}" target="#{comprobanteRetencionControlador.detDocumentoUI}" />  
+						                </p:commandButton>
+						             </p:column>	
+							  </p:dataTable>
+						 </p:panel>  
+			</h:form>
+		</ui:define>
+		<ui:define name="dialogo">
+			<h:form id="formdialog">
+				 <p:dialog header="Establecimientos" widgetVar="establecimientosW" id="EstablecimientosID" draggable="false" modal="true">
+				    	<p:panel>
+				    	 <p:dataTable id="EstablecimientoDT"  var="estab" value="#{comprobanteRetencionControlador.listEstablecimientos}" widgetVar="establecimientoTable" filteredValue="#{comprobanteRetencionControlador.filtraEstablecimiento}"
+				    	 	emptyMessage="No se encuentra el registro filtrado" paginator="true">                      
+						      <p:column headerText="Codigo" sortBy="#{estab.id.codEstablecimiento}" style="width:40%" filterBy="#{estab.id.codEstablecimiento}">
+										<h:outputText value="#{estab.id.codEstablecimiento}" />
+							  </p:column>
+						  	  <p:column headerText="Seleccionar">  
+				                  <p:commandButton icon="ui-icon-check" oncomplete="establecimientosW.hide()" action="#{comprobanteRetencionControlador.ubicarValorEstablecimiento}"
+				                   update=":frm1:CabeceraDocumentoPanel,:frm1:InfoCompradorPanel,:frm1:InfoDocumentoRetenidoPanel,:frm1:detalleDocumentoPanel" >
+				                  	<f:setPropertyActionListener value="#{estab}" target="#{comprobanteRetencionControlador.verCamposEstablecimiento}" />  
+				                  </p:commandButton>  
+				              </p:column>  
+						  </p:dataTable>
+						 </p:panel>  
+				    </p:dialog>
+					<p:dialog header="PuntosEmision" widgetVar="puntosEmisionW" id="puntosEmisionId" draggable="false" modal="true">
+					    	<p:panel>
+					    	 <p:dataTable id="PuntosEmisionDT" paginator="true" var="puntos" value="#{comprobanteRetencionControlador.listPuntosEmision}"  widgetVar="puntosEmisionTable" filteredValue="#{comprobanteRetencionControlador.filtraPuntosEmision}"
+					    	 emptyMessage="No se encuentra el registro filtrado">                      
+							      <p:column headerText="Codigo" sortBy="#{puntos.id.codPuntEmision}" style="width:40%" filterBy="#{puntos.id.codPuntEmision}">
+											<h:outputText value="#{puntos.id.codPuntEmision}" />
+								  </p:column>
+							  	  <p:column headerText="Seleccionar">  
+					                  <p:commandButton icon="ui-icon-check" oncomplete="puntosEmisionW.hide()" action="#{comprobanteRetencionControlador.ubicarValorPuntoEmision}" 
+					                  update=":frm1:CabeceraDocumentoPanel,:frm1:growl,:frm1:InfoCompradorPanel,:frm1:InfoDocumentoRetenidoPanel,:frm1:detalleDocumentoPanel">
+					                  	<f:setPropertyActionListener value="#{puntos}" target="#{comprobanteRetencionControlador.verCamposPE}" />  
+					                  </p:commandButton>  
+					              </p:column>  
+							  </p:dataTable>
+							 </p:panel>  
+					 </p:dialog>
+				  	 <p:dialog header="Codigo Porcentaje impuesto" widgetVar="cod_porcentajeImpiuestoW" id="cod_porcentajeImpiuestoId" draggable="false" resizable="false" modal="true">
+				    	 <p:panel>
+				    	  <p:dataTable id="cod_porcentajeImpiuestoDT" paginator="true"  emptyMessage="No se encuentra el registro filtrado" var="cod_porcentajeImpiuest" value="#{comprobanteRetencionControlador.datacodprocentaje}"  widgetVar="cod_porcentajeImpiuestoTable" filteredValue="#{comprobanteRetencionControlador.filtracodprocentaje}"
+				    	 	 rows="10">                      
+						       <p:column headerText="Codigo" sortBy="#{cod_porcentajeImpiuest.codUnico}" filterBy="#{cod_porcentajeImpiuest.codUnico}">
+									 	 <h:outputText value="#{cod_porcentajeImpiuest.codUnico}" />
+							   </p:column>
+							   <p:column headerText="Descripción" sortBy="#{cod_porcentajeImpiuest.descripcion}" filterBy="#{cod_porcentajeImpiuest.descripcion}">
+										 <h:outputText value="#{cod_porcentajeImpiuest.descripcion}" />
+							   </p:column>
+							   <p:column headerText="Porcentaje" sortBy="#{cod_porcentajeImpiuest.porcentaje}" filterBy="#{cod_porcentajeImpiuest.porcentaje}">
+								 		 <h:outputText value="#{cod_porcentajeImpiuest.porcentaje}" />
+							   </p:column>
+						  	   <p:column headerText="Seleccionar">  
+				                   <p:commandButton icon="ui-icon-check" oncomplete="cod_porcentajeImpiuestoW.hide()" update=":frm1:detalleDocumentoPanel,:frm1:growl,:frm1:CabeceraDocumentoPanel,:frm1:InfoCompradorPanel,:frm1:detallesAdicionalesPanel,:frm1:InfoDocumentoRetenidoPanel" action="#{comprobanteRetencionControlador.calculaTotal('impuestoSeleccionado')}" >
+				                  	 <f:setPropertyActionListener value="#{cod_porcentajeImpiuest}" target="#{comprobanteRetencionControlador.verCamposporcentaje}" />  
+				                   </p:commandButton>  
+				               </p:column>  
+						   </p:dataTable>
+						  </p:panel>  
+					 </p:dialog>
+			</h:form>
+			<p:dialog header="Mensaje de confirmacion"  widgetVar="confirmation" id="MensajConfirma" modal="true">
+		    	<p:panel id="blodialog">
+			    	<h:outputLabel value="Esta seguro que desea realizar los cambios?"/><br/>
+			    	<h:panelGroup style=" font-size: 1.1em;font-weight:400; display: block; text-align: center;padding: 10px;">
+				    	<p:commandButton value="Yes" icon="ui-icon-check" oncomplete="confirmation.hide(),bloquearPagina.hide()" onstart="bloquearPagina.show()" action="#{comprobanteRetencionControlador.insertarComprobanteRetencion('BotonAceptar')}" 
+				    		update=":frm1:detalleDocumentoPanel,:frm1:CabeceraDocumentoPanel,:frm1:growl,:frm1:InfoCompradorPanel,:frm1:detallesAdicionalesPanel,:frm1:InfoDocumentoRetenidoPanel" />  
+					    <p:commandButton value="Not" icon="ui-icon-closethick" oncomplete="confirmation.hide()" update=":frm1:detalleDocumentoPanel,:frm1:CabeceraDocumentoPanel,:frm1:growl,:frm1:InfoCompradorPanel,:frm1:detallesAdicionalesPanel,:frm1:InfoDocumentoRetenidoPanel" />    
+						<p:blockUI block="blodialog" widgetVar="bloquearPagina">  
+						       Guardando..<br />  
+							<p:graphicImage value="/imagenes/ajax-loader.gif"/>  
+						</p:blockUI>
+					</h:panelGroup>
+				</p:panel>
+			</p:dialog>
+		</ui:define>
+	</ui:composition>
+</html>

@@ -1,0 +1,374 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition template="/templates/cimaTemplate.xhtml">
+		<ui:define name="tituloPagina">
+			<h:outputText value=".::Facturas::." />
+		</ui:define>
+
+		<ui:define name="tituloFormulario">
+			<h:outputText value="Facturas" />
+		</ui:define>
+
+		<ui:define name="contenido" >
+			<h:form id="frm1" action="frm1" >	
+		    	<p:remoteCommand  name="onload" action="#{facturaControlador.CargarDatos}" autorun="true" update="datosEmisorPanel,CabeceraDocumentoPanel,InfoCompradorPanel,detalleDocumentoPanel,detallesAdicionalesPanel"  />	       	       	       	
+		       	<p:growl id="growl" showDetail="true" sticky="true" /> 
+
+				<p:panel id="datosEmisorPanel" >
+				    <h:outputText styleClass="titulo" value="INFORMACIóN TRIBUTARIA" />
+			     	<h:panelGrid id="pnInfoTrib" columns="6" title="Información del Emisor" >
+			        	<h:outputText styleClass="label" value="Ruc:" />
+						<h:outputText styleClass="text" value="#{facturaControlador.empresa.ruc}" /> 
+							
+						<h:outputText  styleClass="label" value="Nombre Comercial:"/>
+						<h:outputText  styleClass="text" value="#{facturaControlador.empresa.razonComercial}"/>
+							
+						<h:outputText   styleClass="label"  value="Razón Social:" />
+						<h:outputText   styleClass="text" value="#{facturaControlador.empresa.razonSocial}" />
+							
+						<h:outputText   styleClass="label" value="Dirección Matríz:" />
+						<h:outputText   styleClass="text"  value="#{facturaControlador.empresa.direccionMatriz}" />
+							
+						<h:outputText  styleClass="label" value="Contribuyente Especial:" />
+						<h:outputText  styleClass="text"  value="#{facturaControlador.empresa.contribEspecial}" />
+							
+						<h:outputText   styleClass="label" value="Obligado Contabilidad:" />
+						<h:outputText styleClass="text" value="#{facturaControlador.empresa.obligContabilidad}" />
+			          </h:panelGrid>
+			    </p:panel>
+    
+			    <p:panel id="CabeceraDocumentoPanel" >
+			    	<h:outputText styleClass="titulo" value="FACTURA" />
+			        <h:panelGrid columns="6" title="Cabecera Factura" id="cabFactura">
+						<h:outputText styleClass="label" value="Establecimiento:" />
+			            <h:panelGroup>
+							<p:inputText styleClass="text" value="#{facturaControlador.codEstablecimiento}" disabled="true" readonly="true" />
+	    					<p:commandButton oncomplete="establecimientosW.show()"  icon ="ui-icon-circle-zoomin" actionListener="#{facturaControlador.llenaEstablecimientos}"  
+	    						update=":formdialog:establecimientoId,:frm1:CabeceraDocumentoPanel,:frm1:InfoCompradorPanel,:frm1:detalleDocumentoPanel,:frm1:detallesAdicionalesPanel"/>
+							<h:outputText value="*" style="color: #FF0000;"/>
+						</h:panelGroup>	
+							
+						<h:outputText styleClass="label" value="Punto Emisión:" />					
+						<h:panelGroup>
+							<p:inputText styleClass="text" value="#{facturaControlador.puntoEmision}" disabled="true" readonly="true" />
+			    			<p:commandButton oncomplete="puntosEmisionW.show()" icon ="ui-icon-circle-zoomin" actionListener="#{facturaControlador.llenaPuntosEmision}" disabled="#{facturaControlador.visibleBotonPuntoEmision}" 
+			    				update=":formdialog:puntosEmisionId,:frm1:CabeceraDocumentoPanel,:frm1:InfoCompradorPanel,:frm1:detalleDocumentoPanel,:frm1:detallesAdicionalesPanel" />
+							<h:outputText value="*" style="color: #FF0000;"/>
+						</h:panelGroup>	
+						 
+					 	<h:outputText styleClass="label" value="Secuencial:" />
+						<h:outputText styleClass="text" value="#{facturaControlador.secuencial}" />
+																					
+						<h:outputText styleClass="label" value="Tipo Documento:" />
+						<h:outputText styleClass="text" value="#{facturaControlador.tipoDocumento}" />
+			          
+          	            <h:outputText styleClass="label" value="Tipo Emisión:" />
+          	            <h:panelGroup>
+							<p:selectOneMenu value="#{facturaControlador.tipoEmision}" >
+							   	<f:selectItems value="#{facturaControlador.li}" />
+							   	<p:ajax event="change" value="#{facturaControlador.tipoEmision}"   update=":frm1:CabeceraDocumentoPanel" />
+							</p:selectOneMenu>
+							<h:outputText value="*" style="color: #FF0000;"/>
+						</h:panelGroup>
+						
+						<h:outputText styleClass="label" value="Guia de Remisión:" />
+						<h:panelGroup>
+							<p:inputMask styleClass="text" value="#{facturaControlador.guiaDeRemision}" size="25" mask="999-999-999999999"   /> 					
+							<h:outputText value="*" style="color: #FF0000;"/>
+						</h:panelGroup>
+						
+						<h:outputText styleClass="label" value="Fecha de Emisión:"  />
+						<h:panelGroup>
+							<p:calendar value="#{facturaControlador.fechaDeEmision}" id="popupCal" pattern="dd/MM/yyyy"  />  
+				 			<h:outputText value="*" style="color: #FF0000;"/>
+			 			</h:panelGroup>
+			 	
+			 		</h:panelGrid>
+			   	</p:panel>
+    
+    			<p:panel id="InfoCompradorPanel" >
+    				<h:outputText styleClass="titulo"  value="INFORMACIÓN DEL COMPRADOR" />
+               		<h:panelGrid columns="6" title="Informacion del Comprador" id="infoComprador">
+						<h:outputText styleClass="label"  value="Tipo Comprador:" />
+						<h:panelGroup>
+							<p:selectOneMenu value="#{facturaControlador.tipoComprador}" id="cmbTipoComp" >
+							   	<f:selectItems value="#{facturaControlador.tiposComprador}" />
+							   	<p:ajax event="change" value="#{facturaControlador.tipoComprador}"   update=":frm1:cmbTipoComp,:frm1:iptIdentifComp" />						   							   	
+							</p:selectOneMenu>
+	                  		<h:outputText value="*" style="color: #FF0000;"/>
+                  		</h:panelGroup>
+                  		
+						<h:outputText styleClass="label" value="Identificación del Comprador:"  />
+						<h:panelGroup>
+							<p:autoComplete value="#{facturaControlador.identificacionDelComprador}" id="iptIdentifComp"  
+								completeMethod="#{facturaControlador.complete_RucComprador(facturaControlador.identificacionDelComprador)}" >
+								<p:ajax event="blur" listener="#{facturaControlador.buscarComprador}"   update=":frm1:iptIdentifComp,:frm1:pnGDatosComp,:frm1:growl" />
+							</p:autoComplete>
+							<h:outputText value="*" style="color: #FF0000;"/>
+						</h:panelGroup>
+						
+						<h:panelGroup id="pnGDatosComp">
+							<h:outputText styleClass="label" value="Razón Social/Apellidos y Nombres:" />
+	                        <br />						
+							<h:inputText styleClass="text" value="#{facturaControlador.razonSocial}" disabled="#{facturaControlador.presenta}" size="60" />
+	                        <br /> 
+							<h:outputText styleClass="label" value="Dirección Establecimiento:" />
+	                        <br />						
+							<h:inputText styleClass="text" value="#{facturaControlador.direccionEstablecimiento}" disabled="#{facturaControlador.presenta}" size="60" />
+	                        <br />
+							<h:outputText styleClass="label" value="Correo Electrónico:" />
+	                        <br />						
+							<h:inputText  styleClass="text"  value="#{facturaControlador.correoElectronico}" disabled="#{facturaControlador.presenta}" size="60" />
+	                        <br />
+							<h:outputText styleClass="label" value="Teléfono:" />
+	                        <br />						
+							<h:inputText  styleClass="text" value="#{facturaControlador.telefono}" disabled="#{facturaControlador.presenta}" size="20" />
+                   		</h:panelGroup>						
+         			</h:panelGrid>
+    			</p:panel>    
+    			<p:panel id="detalleDocumentoPanel" >
+         			<h:panelGrid columns="4" title="DETALLE" style="align:CENTER"> 
+            			<p:commandButton value="Detalle" icon="ui-icon-circle-plus" action="#{facturaControlador.nuevoDetalle}" update=":frm1:dtDetalle,:frm1:growl" />
+ 
+			            <p:commandButton value="Detalle Adicional" icon="ui-icon-circle-plus" action="#{facturaControlador.nuevoDetalleAdicional}" update=":frm1:detallesAdicionalesPanel,:frm1:growl" />
+			
+						<p:commandButton value="Guardar"  icon="ui-icon-disk" oncomplete="confirmation.show()" 
+							update=":frm1:growl,:frm1:CabeceraDocumentoPanel,:frm1:InfoCompradorPanel,:frm1:detalleDocumentoPanel,:frm1:detallesAdicionalesPanel" /> 
+           			</h:panelGrid>
+					<p:dataTable id="dtDetalle"
+							   	 value="#{facturaControlador.listPantallaDetalleDocumento}"
+							   	 var="detalleDocumento"
+								 paginator="true" 
+								 binding="#{facturaControlador.dataTableDetalle}"
+								 rows="10"  
+	                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+	                             rowsPerPageTemplate="5,10,15">
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Linea" />
+								</f:facet>
+								<h:outputText value="#{detalleDocumento.linea}" />
+							</p:column>
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Codigo Producto" />
+								</f:facet>
+								<p:inputText styleClass="text" value="#{detalleDocumento.codigoProducto}" disabled="true" readonly="true"/>
+		    					<p:commandButton oncomplete="ProductosW.show()"  icon ="ui-icon-circle-zoomin" actionListener="#{facturaControlador.llenaProductos}" update=":formdialog:ProductosId,:frm1:detallesAdicionalesPanel,:frm1:detalleDocumentoPanel,:frm1:InfoCompradorPanel,:frm1:CabeceraDocumentoPanel">
+									<f:setPropertyActionListener value="#{detalleDocumento}" target="#{facturaControlador.seleccionaDetalleDocumento}"/>  
+								</p:commandButton>
+							</p:column>	
+							<p:column>
+								<f:facet name="header">
+									<h:outputText  value="Descripción" />
+								</f:facet>
+								<h:outputText styleClass="text" value="#{detalleDocumento.descripcion}" />
+							</p:column>
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Cantidad"  />
+								</f:facet>
+								<h:inputText styleClass="text" value="#{detalleDocumento.cantidad}" style="text-align: right;"  requiredMessage="Cantidad Requerida" required="true"  autocomplete="0">
+								     <p:ajax event="change" listener="#{facturaControlador.recogiendoDatos}"   update=":frm1:detalleDocumentoPanel,:frm1:growl" />
+								</h:inputText>
+							</p:column>
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Precio" />
+								</f:facet>
+								<h:outputText styleClass="text" value="#{detalleDocumento.precio}" />
+							</p:column>
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Descuento" />
+								</f:facet>
+								<h:inputText styleClass="text" value="#{detalleDocumento.descuento}" style="text-align: right;" >
+									<p:ajax event="change" listener="#{facturaControlador.recogiendoDatos}"   update=":frm1:detalleDocumentoPanel" />
+								</h:inputText>
+							</p:column>
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Subtotal" />
+								</f:facet>
+								<h:outputText styleClass="text" value="#{detalleDocumento.valorSubtotal}" />
+							</p:column>
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Valor ICE" />
+								</f:facet>
+								<h:outputText styleClass="text" value="#{detalleDocumento.valorIce}" />
+							</p:column>
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Tipo Iva" />
+								</f:facet>
+								<h:outputText value="#{detalleDocumento.valorIVA}" />
+							</p:column>
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Valor Total" />
+								</f:facet>
+								<h:outputText styleClass="text" value="#{detalleDocumento.valorTotal}" />
+							</p:column>
+							<p:column>
+	                            <f:facet name="header">
+	                                <h:outputText value="Acción" />
+	                            </f:facet>
+	                            <p:commandButton title="Borrar" icon="ui-icon-trash" action="#{facturaControlador.BorrarLinea}" update=":frm1:detalleDocumentoPanel"  />
+                            </p:column>													
+					</p:dataTable>
+						
+					<h:panelGroup style="text-align: right;  display: block;">
+						<h:outputText value="Subtotal Sin Impuesto:" styleClass="label"/>
+						<h:inputText value="#{facturaControlador.subtotalSinImpuesto}" readonly="true"  style="text-align: right;"/>
+					</h:panelGroup>
+					
+					<h:panelGroup style="text-align: right;  display: block;">
+						<h:outputText value="Subtotal 12%:" styleClass="label"/>
+						<h:inputText value="#{facturaControlador.subtotal12}" readonly="true"  style="text-align: right;"/>
+					</h:panelGroup>
+					
+					<h:panelGroup style="text-align: right;  display: block;">
+						<h:outputText value="Subtotal 0%:" styleClass="label"/>
+						<h:inputText value="#{facturaControlador.subtotal0}" readonly="true"  style="text-align: right;"/>
+					</h:panelGroup>
+					
+					<h:panelGroup style="text-align: right;  display: block;">
+						<h:outputText value="Subtotal No Objeto de IVA:" styleClass="label"/>
+						<h:inputText value="#{facturaControlador.subtotalNoIva}" readonly="true"  style="text-align: right;"/>
+					</h:panelGroup>
+					
+					<h:panelGroup style="text-align: right;  display: block;">
+						<h:outputText value="Total Descuento:" styleClass="label"/>
+						<h:inputText value="#{facturaControlador.totalDescuento}" readonly="true"  style="text-align: right;"/>
+					</h:panelGroup>
+					
+					<h:panelGroup style="text-align: right;  display: block;">
+						<h:outputText value="Valor ICE:" styleClass="label"/>
+						<h:inputText value="#{facturaControlador.totalvalorICE}" readonly="true"  style="text-align: right;"/>
+					</h:panelGroup>
+					
+					<h:panelGroup style="text-align: right;  display: block;">
+						<h:outputText value="IVA 12%:" styleClass="label"/>
+						<h:inputText value="#{facturaControlador.iva12}" readonly="true"  style="text-align: right;"/>
+					</h:panelGroup>
+					
+					<h:panelGroup style="text-align: right;  display: block;">
+	                    <h:panelGroup id="prop">
+							<h:outputText value="Propina 10%:" styleClass="label"/>
+							<p:selectBooleanCheckbox value="#{facturaControlador.propina}" >
+								<p:ajax event="change" listener="#{facturaControlador.calculaTotal}"   update=":frm1:detalleDocumentoPanel" />  
+	                        </p:selectBooleanCheckbox>
+	                    </h:panelGroup>
+						<h:inputText value="#{facturaControlador.propina10}" readonly="true"  style="text-align: right;"/>
+					</h:panelGroup>
+					
+					<h:panelGroup style="text-align: right;  display: block;">
+						<h:outputText value="Valor Total:" styleClass="label"/>
+						<h:inputText value="#{facturaControlador.valorTotalFactura}" readonly="true"  style="text-align: right;"/>
+					</h:panelGroup>
+					
+         		</p:panel>
+	     		<p:panel id="detallesAdicionalesPanel" >					
+					<h:outputText styleClass="titulo" value="Detalles Adicionales" />
+					<p:dataTable id="dtDetalleAd" value="#{facturaControlador.listPantallaDetalleAdicional}"
+								 var="detalleAdicional" paginator="true" 
+								 binding="#{facturaControlador.dataTableDetalleAdicional}" rows="10"
+		                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+		                         rowsPerPageTemplate="5,10,15">
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Nombre" />
+							</f:facet>
+							<h:inputText styleClass="text" value="#{detalleAdicional.nombre}"  requiredMessage="Nombre Requerido" required="true" style="width:100%" maxlength="300" />
+						</p:column>
+						<p:column>
+							<f:facet name="header">
+								<h:outputText value="Descripción" />
+							</f:facet>
+							<h:inputText styleClass="text" value="#{detalleAdicional.valor}"  requiredMessage="Valor Requerido" required="true" style="width:100%" maxlength="300" />									
+						</p:column>
+						<p:column>
+				            <f:facet name="header">
+				            	<h:outputText value="Accion" />
+				            </f:facet>
+			            	<p:commandButton title="Borrar" icon="ui-icon-trash" action="#{facturaControlador.BorrarLineaDetAdicional}" update=":frm1:detallesAdicionalesPanel" />
+			           	</p:column>	
+					</p:dataTable>
+				</p:panel>
+			</h:form>
+		</ui:define>
+		<ui:define name="dialogo">
+			<h:form id="formdialog">
+				<p:dialog header="Establecimientos" widgetVar="establecimientosW"  id="establecimientoId" draggable="false" resizable="false" modal="true">
+					<p:panel>
+						<p:dataTable id="EstablecimientoDT" emptyMessage="No se encuentra el registro filtrado" rows="10" var="estab" value="#{facturaControlador.listEstablecimientos}" widgetVar="establecimientoTable" filteredValue="#{facturaControlador.filtraEstablecimiento}">                      
+							<p:column headerText="Codigo" sortBy="#{estab.id.codEstablecimiento}" filterBy="#{estab.id.codEstablecimiento}">
+								<h:outputText value="#{estab.id.codEstablecimiento}" />
+							</p:column>
+							  	<p:column headerText="Seleccionar">  
+					            	<p:commandButton icon="ui-icon-check" oncomplete="establecimientosW.hide()" action="#{facturaControlador.ubicarValorEstablecimiento}" 
+					            	 update=":frm1:CabeceraDocumentoPanel,:frm1:InfoCompradorPanel,:frm1:detalleDocumentoPanel,:frm1:detallesAdicionalesPanel">
+					                	<f:setPropertyActionListener value="#{estab}" target="#{facturaControlador.verCampos}" />  
+					                </p:commandButton>  
+					            </p:column>  
+						</p:dataTable>
+					</p:panel>  
+				</p:dialog>
+				<p:dialog header="PuntosEmision" widgetVar="puntosEmisionW" id="puntosEmisionId" draggable="false" resizable="false" modal="true">
+			    	<p:panel>
+				    	<p:dataTable id="PuntosEmisionDT" emptyMessage="No se encuentra el registro filtrado" rows="10" var="puntos" value="#{facturaControlador.listPuntosEmision}"  widgetVar="puntosEmisionTable" filteredValue="#{facturaControlador.filtraPuntosEmision}">                      
+							<p:column headerText="Codigo" sortBy="#{puntos.id.codPuntEmision}" filterBy="#{puntos.id.codPuntEmision}">
+								<h:outputText value="#{puntos.id.codPuntEmision}" />
+							</p:column>
+						  	<p:column headerText="Seleccionar">  
+				            	<p:commandButton icon="ui-icon-check" oncomplete="puntosEmisionW.hide()" update=":frm1:CabeceraDocumentoPanel,:frm1:growl,:frm1:InfoCompradorPanel,:frm1:detalleDocumentoPanel,:frm1:detallesAdicionalesPanel" action="#{facturaControlador.ubicarValorPuntoEmision}" >
+				                	<f:setPropertyActionListener value="#{puntos}" target="#{facturaControlador.verCamposPE}" />  
+				                </p:commandButton>  
+				             </p:column>  
+						 </p:dataTable>
+					 </p:panel>  
+				</p:dialog>
+          		<p:dialog header="Productos" widgetVar="ProductosW"  id="ProductosId" draggable="false" resizable="false" modal="true">
+			    	<p:panel>
+				    	<p:dataTable id="ProductosDT"  var="produ" value="#{facturaControlador.listProducto}" emptyMessage="No se encuentra el registro filtrado" widgetVar="ProductoTable" filteredValue="#{facturaControlador.filtraProducto}">                      
+					      	<p:column headerText="Codigo" sortBy="#{produ.codPrincipal}" filterBy="#{produ.codPrincipal}">
+								<h:outputText value="#{produ.codPrincipal}" />
+						  	</p:column>
+					      	<p:column headerText="Descripcion" sortBy="#{produ.descripcion}" filterBy="#{produ.descripcion}">
+								<h:outputText value="#{produ.descripcion}" />
+						  	</p:column>
+						  		<p:column headerText="Valor Unitario" sortBy="#{produ.valorUnitario}" filterBy="#{produ.valorUnitario}">
+								<h:outputText value="#{produ.valorUnitario}" />
+							</p:column>
+					  	  	<p:column headerText="Seleccionar">  
+				                <p:commandButton icon="ui-icon-check" oncomplete="ProductosW.hide()" update=":frm1:detalleDocumentoPanel,:frm1:growl,:frm1:detallesAdicionalesPanel,:frm1:InfoCompradorPanel,:frm1:CabeceraDocumentoPanel" action="#{facturaControlador.ubicarValoresProducto}" >
+				                	<f:setPropertyActionListener value="#{produ}" target="#{facturaControlador.verCamposPro}" />  
+				                </p:commandButton>  
+			              	</p:column>  
+						</p:dataTable>
+					</p:panel>  
+				</p:dialog>
+			</h:form>
+			<p:dialog header="Mensaje de confirmacion"  widgetVar="confirmation" id="MensajConfirma" modal="true">
+		    	<p:panel id="blodialog">
+			    	<h:outputLabel value="Esta seguro que desea realizar los cambios?"/><br/>
+			    	<h:panelGroup style=" font-size: 1.1em;font-weight:400; display: block; text-align: center;padding: 10px;">
+				    	<p:commandButton value="Yes" icon="ui-icon-check" oncomplete="confirmation.hide(),bloquearPagina.hide()" onstart="bloquearPagina.show()" action="#{facturaControlador.insertarFactura('BotonAceptar')}" 
+				    		update=":frm1:growl,:frm1:CabeceraDocumentoPanel,:frm1:InfoCompradorPanel,:frm1:detalleDocumentoPanel,:frm1:detallesAdicionalesPanel" />  
+					    <p:commandButton value="Not" icon="ui-icon-closethick" oncomplete="confirmation.hide()" update=":frm1:growl,:frm1:CabeceraDocumentoPanel,:frm1:InfoCompradorPanel,:frm1:detalleDocumentoPanel,:frm1:detallesAdicionalesPanel" />    
+						<p:blockUI block="blodialog" widgetVar="bloquearPagina">  
+						       Guardando..<br />  
+							<p:graphicImage value="/imagenes/ajax-loader.gif"/>  
+						</p:blockUI>
+					</h:panelGroup>
+				</p:panel>
+			</p:dialog>
+		</ui:define>
+	</ui:composition>
+</html>

@@ -1,0 +1,399 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/templates/cimaTemplate.xhtml">
+	<ui:define name="tituloPagina">
+		<h:outputText value=".::Empresa Emisora::." />
+	</ui:define>
+
+	<ui:define name="tituloFormulario">
+		<h:outputText value="Empresa Emisora" />
+	</ui:define>
+
+
+	<ui:define name="contenido">
+		<h:form id="frm1" action="frm1" method="post" onkeypress="if (event.keyCode == 13) {  return false; }">
+			<p:remoteCommand name="onload"
+				action="#{facEmpresaEmisoraControlador.cargarDatos()}" autorun="true"
+				update="datosEmpresaEmisora,listasUsuarios" />
+			<p:growl id="growl" showDetail="true" />
+			<p:growl id="msgs" showDetail="true" />  
+			
+			<p:panel id="datosEmpresaEmisora" header="Datos de la Empresa" menuTitle="Ingreso de Empresa">
+				<h3 align="center" class="title ui-widget-header ui-corner-all">Ingreso de la Empresa</h3>			
+				<h:panelGrid columns="4" title="Mantenimiento de Empresea emisora">					
+					<h:outputText value="Ruc Empresa :" styleClass="label"/>
+					<h:panelGroup>
+						<h:inputText id="txtRucEmpresa" value="#{facEmpresaEmisoraControlador.ruc}" disabled="#{facEmpresaEmisoraControlador.grisado}" maxlength="13"  styleClass="text">
+							<p:ajax event="blur" listener="#{facEmpresaEmisoraControlador.validarRuc}" update=":frm1:growl" />
+						</h:inputText>
+						<h:outputText value="*" style="color: #FF0000;"/>
+					</h:panelGroup>
+
+					<h:outputText value="Contribución Especial :" styleClass="label"/>
+					<h:panelGroup>
+						<h:inputText id="txtContribucionEspecial" value="#{facEmpresaEmisoraControlador.contribEspecial}" styleClass="text" style="text-align: right;" converterMessage="Solo Numero" >
+							<p:ajax event="keyup" listener="#{facEmpresaEmisoraControlador.validarNumero}" update=":frm1:growl" />
+						</h:inputText>
+						<h:outputText value="*" style="color: #FF0000;"/>
+					</h:panelGroup>
+
+					<h:outputText value="Razón Social :" styleClass="label"/>
+					<h:panelGroup>
+						<h:inputText id="txtRazonSocial" value="#{facEmpresaEmisoraControlador.razonSocial}"  style=" width : 218px; height : 22px;" styleClass="text">
+						</h:inputText>
+						<h:outputText value="*" style="color: #FF0000;"/>
+					</h:panelGroup>
+
+					<h:outputText value="Razón Comercial :"  styleClass="label"/>
+					<h:inputText id="txtRazonComercial"  value="#{facEmpresaEmisoraControlador.razonComercial}" style=" width : 218px;" styleClass="text" >
+					</h:inputText>
+
+					<h:outputText value="Dirección de Matríz :" styleClass="label"/>
+					<h:inputText id="txtDireccionMatriz"  value="#{facEmpresaEmisoraControlador.direccionMatriz}" style=" width : 219px;" styleClass="text"/>
+
+					<h:outputText value="Obligado a llevar contabilidad :" styleClass="label"/>
+					<p:selectBooleanCheckbox value="#{facEmpresaEmisoraControlador.obligContabilidad}" >
+					</p:selectBooleanCheckbox>
+
+					<h:outputText value="Ruta de Comprobantes Generados :" styleClass="label"/>
+					<h:panelGroup>
+						<h:inputText value="#{facEmpresaEmisoraControlador.pathCompGenerados}"  style=" width : 218px;"  styleClass="text"/>
+						<h:outputText value="*" style="color: #FF0000;"/>
+					</h:panelGroup>
+					
+					<h:outputText value="Ruta de Comprobantes Firmados :" styleClass="label"/>
+					<h:panelGroup>
+						<h:inputText value="#{facEmpresaEmisoraControlador.pathCompFirmados}" style=" width : 218px;" styleClass="text" />
+						<h:outputText value="*" style="color: #FF0000;"/>
+					</h:panelGroup>
+					
+					<h:outputText value="Ruta de Comprobantes Autorizados :" styleClass="label" />
+					<h:panelGroup>
+						<h:inputText value="#{facEmpresaEmisoraControlador.pathCompAutorizados}" style=" width : 218px;" styleClass="text" />
+						<h:outputText value="*" style="color: #FF0000;"/>
+					</h:panelGroup>
+	
+					<h:outputText value="Ruta de Comprobantes no Autorizados :" styleClass="label" />
+					<h:panelGroup>
+						<h:inputText value="#{facEmpresaEmisoraControlador.pathCompNoAutorizados}" style=" width : 218px;" styleClass="text" />
+						<h:outputText value="*" style="color: #FF0000;"/>
+					</h:panelGroup>
+					
+					<h:outputText value="Ruta de Información Recibida :"  styleClass="label"/>
+					<h:panelGroup>
+						<h:inputText value="#{facEmpresaEmisoraControlador.pathInfoRecibida}" style=" width : 218px;" styleClass="text" />
+						<h:outputText value="*" style="color: #FF0000;"/>
+					</h:panelGroup>
+					
+					<h:outputText value="Ruta de la Firma :" styleClass="label" />
+					<h:panelGroup>
+						<h:inputText value="#{facEmpresaEmisoraControlador.pathFirma}" styleClass="text" style=" width : 218px;"/>
+						<h:outputText value="*" style="color: #FF0000;"/>
+					</h:panelGroup>
+					
+					<h:outputText value="Ruta del Logo :"  styleClass="label"/>
+					<h:inputText  value="#{facEmpresaEmisoraControlador.pathLogoEmpresa}" style=" width : 218px;" styleClass="text" />
+					
+					<h:outputText value="Ruta de Almacenar Comprob. de Recepción :"  styleClass="label"/>
+					<h:panelGroup>
+						<h:inputText  value="#{facEmpresaEmisoraControlador.pathcomprecepcion}" style=" width : 218px;" styleClass="text" />
+						<h:outputText value="*" style="color: #FF0000;"/>
+					</h:panelGroup>
+
+					<h:outputText value="Url Web Services :" styleClass="label" />
+					<h:panelGroup>
+						<h:inputText value="#{facEmpresaEmisoraControlador.urlWebServices}" style=" width : 218px;" styleClass="text" />
+						<h:outputText value="*" style="color: #FF0000;"/>
+					</h:panelGroup>
+
+					<h:outputText value="Estado :" styleClass="label" />
+					<p:selectOneMenu value="#{facEmpresaEmisoraControlador.isActive}" >
+						<f:selectItems value="#{facEmpresaEmisoraControlador.li_estado}"></f:selectItems>
+					</p:selectOneMenu>
+					
+					<h:outputText value="Servidor SMTP:" styleClass="label" />
+					<h:panelGroup>
+						<h:inputText value="#{facEmpresaEmisoraControlador.servidorSMTP}" style=" width : 218px;" styleClass="text"  />
+						<h:outputText value="*" style="color: #FF0000;"/>
+					</h:panelGroup>
+					
+					<h:outputText value="Puerto SMTP :" styleClass="label" />
+					<h:panelGroup>
+						<h:inputText id="txtpuertoSMTP" value="#{facEmpresaEmisoraControlador.puertoSMTP}" styleClass="text" style="text-align: right;" converterMessage="Solo Numero" >
+							<p:ajax event="keyup" listener="#{facEmpresaEmisoraControlador.validarNumero}" update=":frm1:growl" />					
+						</h:inputText>
+						<h:outputText value="*" style="color: #FF0000;"/>
+					</h:panelGroup>
+
+					<h:outputText value="Usuario SMTP:" styleClass="label" />
+					<h:panelGroup>
+						<h:inputText id="txtusuarioSMTP" value="#{facEmpresaEmisoraControlador.userSMTP}" title="alguien@example.com" style=" width : 218px;" styleClass="text"  />	
+						<h:outputText value="*" style="color: #FF0000;"/>
+					</h:panelGroup>
+					
+					<h:outputText value="Autentificación de SMTP :" styleClass="label"/>
+					<p:selectBooleanCheckbox value="#{facEmpresaEmisoraControlador.sslSMTP}" >
+					</p:selectBooleanCheckbox>
+					
+					<h:outputText value="Password SMTP :"  styleClass="label"/>
+					<h:inputSecret id="txtpassword" value="#{facEmpresaEmisoraControlador.passSMTP}" redisplay="true" />
+					
+					<h:outputText value="E-mail:" styleClass="label"/>
+					<h:panelGroup>
+						<h:inputText value="#{facEmpresaEmisoraControlador.emailEnvio}" title="alguien@example.com" style=" width : 218px;" styleClass="text" />
+						<h:outputText value="*" style="color: #FF0000;"/>
+					</h:panelGroup>
+					
+					<h:outputText value="Correo de Recepción:" styleClass="label"/>
+					<h:panelGroup>
+						<h:inputText value="#{facEmpresaEmisoraControlador.correorecepcion}" title="alguien@example.com" style=" width : 218px;" styleClass="text" />
+						<h:outputText value="*" style="color: #FF0000;"/>
+					</h:panelGroup>
+					
+					<h:outputText value="Ruta de Comprobantes de Contingencia:" styleClass="label"/>
+					<h:panelGroup>
+						<h:inputText value="#{facEmpresaEmisoraControlador.pathCompContingencia}" style=" width : 218px;" styleClass="text" />
+						<h:outputText value="*" style="color: #FF0000;"/>
+					</h:panelGroup>
+					
+					<h:outputText value="Fecha de Resolucion de Contribuyente Especial: (dd/mm/yyyy)" styleClass="label"/>
+					<h:panelGroup>
+						<h:inputText value="#{facEmpresaEmisoraControlador.fechaResolucionContribEspecial}" style=" width : 218px;" styleClass="text" />
+						<h:outputText value="*" style="color: #FF0000;"/>
+					</h:panelGroup>
+					
+					<h:outputText value="Clave de la Firma:" styleClass="label"/>
+					<h:panelGroup>
+						<h:inputText value="#{facEmpresaEmisoraControlador.passFirma}" style=" width : 218px;" styleClass="text" />
+						<h:outputText value="*" style="color: #FF0000;"/>
+					</h:panelGroup>
+					
+					<h:outputText value="Tipo de Firma:" styleClass="label"/>
+					<h:panelGroup>
+						<h:inputText value="#{facEmpresaEmisoraControlador.typeFirma}" style=" width : 218px;" styleClass="text" />
+						<h:outputText value="*" style="color: #FF0000;"/>
+					</h:panelGroup>
+					<h:outputText value="" styleClass="label"/>
+					<h:outputText value="" styleClass="label"/>
+					<h:outputText value="Path File XSD:" styleClass="label"/>
+					<h:panelGroup>
+						<h:inputText value="#{facEmpresaEmisoraControlador.pathXSD}" style=" width : 218px;" styleClass="text" />
+						<h:outputText value="*" style="color: #FF0000;"/>
+					</h:panelGroup>
+					<h:outputText value="Path File Jasper:" styleClass="label"/>
+					<h:panelGroup>
+						<h:inputText value="#{facEmpresaEmisoraControlador.pathJasper}" style=" width : 218px;" styleClass="text" />
+					</h:panelGroup>
+					<h:outputText value="" styleClass="label"/>
+					<h:outputText value="" styleClass="label"/>
+					<h:panelGroup>
+						<p:commandButton value="Guardar" icon="ui-icon-disk" oncomplete="confirmation.show()"
+							update = ":frm1:datosEmpresaEmisora,:frm1:listasUsuarios" />
+						<p:commandButton value="Limpiar" icon="ui-icon-arrowrefresh-1-e" action="#{facEmpresaEmisoraControlador.Limpiar}" update = ":frm1:datosEmpresaEmisora,:frm1:listasUsuarios" 
+							title="Limpiar los campos"/>
+					</h:panelGroup>
+				</h:panelGrid>
+				
+				<!-- 	private String fechaCreacion;
+	private String userCreacion;
+	private String fechaModificacion;
+	private String userModificacion; -->
+			</p:panel>
+			<p:panel id="listasUsuarios" header="" >
+				<p:dataTable var="empresa"
+					value="#{facEmpresaEmisoraControlador.listEmpresa}"
+					paginator="true" rows="10"
+					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					rowsPerPageTemplate="5,10,15" rowStyleClass="fila1">
+					<f:facet name="header">
+						<h:outputText value="Listados de Empresas Configuradas" styleClass="cabeceraTabla" />
+					</f:facet>
+					<p:column>
+						<f:facet name="header">
+							<h:outputText value="Ruc Empresa" />
+						</f:facet>
+						<h:outputText value="#{empresa.ruc}" />
+					</p:column>
+					<p:column>
+						<f:facet name="header">
+							<h:outputText value="Razón Social" />
+						</f:facet>
+						<h:outputText value="#{empresa.razonSocial}" />
+					</p:column>
+					<p:column>
+						<f:facet name="header">
+							<h:outputText value="Razón Comercial" />
+						</f:facet>
+						<h:outputText value="#{empresa.razonComercial}" />
+					</p:column>
+
+					<p:column>
+						<f:facet name="header">
+							<h:outputText value="Dirección Matríz" />
+						</f:facet>
+						<h:outputText value="#{empresa.direccionMatriz}" />
+					</p:column>
+					<p:column>
+						<f:facet name="header">
+							<h:outputText value="Contribuyente Especial" />
+						</f:facet>
+						<h:outputText value="#{empresa.contribEspecial}" />
+					</p:column>
+					<p:column>
+						<f:facet name="header">
+							<h:outputText value="Obligado a llevar contabilidad" />
+						</f:facet>
+						<p align="center">
+							<h:outputText value="#{empresa.obligContabilidad}" />
+						</p>
+					</p:column>
+
+					<p:column>
+						<f:facet name="header">
+							<h:outputText value="Url Web Services" />
+						</f:facet>
+						<h:outputText value="#{empresa.urlWebServices}" />
+					</p:column>
+					<p:column>
+						<f:facet name="header">
+							<h:outputText value="Estado" />
+						</f:facet>
+						<p align="center">
+							<h:outputText value="#{empresa.isActive}" />
+						</p>
+					</p:column>
+					<p:column style="widget :30%">
+						<f:facet name="header">
+							<h:outputText value="Acción" />
+						</f:facet>
+						<h:panelGrid columns="3" title="Acciones">
+		                	<p:commandButton id="selectButton" update=":frmDialog:panelEmpresasSeleccionado" oncomplete="empresaDetail.show()" icon="ui-icon-search"
+		                	 title="Mas Detalle..." action="#{facEmpresaEmisoraControlador.vistaprebia}">  
+	        		        	<f:setPropertyActionListener value="#{empresa}" target="#{facEmpresaEmisoraControlador.verCampos}" />  
+	            			</p:commandButton>  
+							<p:commandButton title="Modificar" icon="ui-icon-document" action="#{facEmpresaEmisoraControlador.modificar}"  update=":frm1:datosEmpresaEmisora">
+								<f:setPropertyActionListener target="#{facEmpresaEmisoraControlador.camposModificar}" value="#{empresa}">
+								</f:setPropertyActionListener>
+							</p:commandButton>
+	
+							<p:commandButton title="Borrar" icon="ui-icon-trash"  action="#{facEmpresaEmisoraControlador.BorrarLiniea}" update=":frm1:listasUsuarios">
+								<f:setPropertyActionListener target="#{facEmpresaEmisoraControlador.selecionarCampos}" value="#{empresa}" >
+									</f:setPropertyActionListener>
+							</p:commandButton>
+						</h:panelGrid>
+					</p:column>
+					
+				</p:dataTable>
+		</p:panel>
+		</h:form>
+	</ui:define>
+	<ui:define name="dialogo">
+		<h:form id="frmDialog">
+			<p:dialog header="Empresa Detalles" widgetVar="empresaDetail" resizable="false" id="empreDlg" 
+               showEffect="clip" hideEffect="fold" modal="true">  
+ 				<p:panel id="panelEmpresasSeleccionado">
+			        <h:panelGrid id="display" columns="2" cellpadding="4" style="margin:0 auto;"> 
+							<f:facet name="header">
+								<h:outputText value="Consulta de Usuario" styleClass="titulo"/>
+							</f:facet>
+						
+							<h:outputText value="Ruc Empresa :" styleClass="label"/>
+							<h:outputText value="#{facEmpresaEmisoraControlador.vercamposSeleccionado.ruc}" style="font-weight:bold"/>
+	
+							<h:outputText value="Contribución Especial :" styleClass="label"/>
+							<h:outputText value="#{facEmpresaEmisoraControlador.vercamposSeleccionado.contribEspecial}" style="font-weight:bold" styleClass="text"/>
+			
+							<h:outputText value="Razón Social :" styleClass="label"/>
+							<h:outputText value="#{facEmpresaEmisoraControlador.vercamposSeleccionado.razonSocial}" style="font-weight:bold" styleClass="text"/>
+					
+							<h:outputText value="Razón Comercial :" styleClass="label"/>
+							<h:outputText value="#{facEmpresaEmisoraControlador.vercamposSeleccionado.razonComercial}" style="font-weight:bold" styleClass="text"/>
+					
+							<h:outputText value="Dirección de Matriz :" styleClass="label"/>
+							<h:outputText value="#{facEmpresaEmisoraControlador.vercamposSeleccionado.direccionMatriz}" style="font-weight:bold" styleClass="text"/>
+					
+							<h:outputText value="Obligado a llevar Contabilidad :" styleClass="label"/>
+							<h:outputText value="#{facEmpresaEmisoraControlador.vercamposSeleccionado.obligContabilidad}" style="font-weight:bold" styleClass="text"/>
+							
+							<h:outputText value="Ruta de Comprobantes Generados :" styleClass="label"/>
+							<h:outputText value="#{facEmpresaEmisoraControlador.vercamposSeleccionado.pathCompGenerados}" style="font-weight:bold" styleClass="text"/>
+	
+							<h:outputText value="Ruta de Comprobantes Firmados :" styleClass="label"/>
+							<h:outputText value="#{facEmpresaEmisoraControlador.vercamposSeleccionado.pathCompFirmados}" style="font-weight:bold" styleClass="text"/>
+	
+							<h:outputText value="Ruta de Comprobantes Autorizados :" styleClass="label"/>
+							<h:outputText value="#{facEmpresaEmisoraControlador.vercamposSeleccionado.pathCompAutorizados}" style="font-weight:bold" styleClass="text"/>
+	
+							<h:outputText value="Ruta de Comprobantes no Autorizados :" styleClass="label"/>
+							<h:outputText value="#{facEmpresaEmisoraControlador.vercamposSeleccionado.pathCompNoAutorizados}" style="font-weight:bold" styleClass="text"/>
+	
+							<h:outputText value="Ruta de Información Recibida :" styleClass="label"/>
+							<h:outputText value="#{facEmpresaEmisoraControlador.vercamposSeleccionado.pathInfoRecibida}" style="font-weight:bold" styleClass="text"/>
+	
+							<h:outputText value="Ruta de la Firma :" styleClass="label"/>
+							<h:outputText value="#{facEmpresaEmisoraControlador.vercamposSeleccionado.pathFirma}" style="font-weight:bold" styleClass="text"/>
+						
+							<h:outputText value="Ruta de Comprobantes de Contingencia :" styleClass="label"/>
+							<h:outputText value="#{facEmpresaEmisoraControlador.vercamposSeleccionado.pathCompContingencia}" style="font-weight:bold" styleClass="text"/>
+
+							<h:outputText value="Fecha de Resolucion de Contribuyente Especial :" styleClass="label"/>
+							<h:outputText value="#{facEmpresaEmisoraControlador.vercamposSeleccionado.fechaResolucionContribEspecial}" style="font-weight:bold" styleClass="text"/>
+	
+							<h:outputText value="Ruta de Almacenar Comprob. de Recepción :" styleClass="label"/>
+							<h:outputText value="#{facEmpresaEmisoraControlador.vercamposSeleccionado.pathCompRecepcion}" style="font-weight:bold" styleClass="text"/>
+							
+							<h:outputText value="Ruta del Logo :" styleClass="label"/>
+							<h:outputText value="#{facEmpresaEmisoraControlador.vercamposSeleccionado.pathLogoEmpresa}" style="font-weight:bold" styleClass="text"/>
+	
+							<h:outputText value="Url Web Services :" styleClass="label"/>
+							<h:outputText value="#{facEmpresaEmisoraControlador.vercamposSeleccionado.urlWebServices}" style="font-weight:bold" styleClass="text"/>
+	
+							<h:outputText value="Estado :" styleClass="label"/>
+							<h:outputText value="#{facEmpresaEmisoraControlador.vercamposSeleccionado.isActive}" style="font-weight:bold" styleClass="text"/>
+						
+							<h:outputText value="Servidor SMTP:" styleClass="label"/>
+							<h:outputText value="#{facEmpresaEmisoraControlador.vercamposSeleccionado.servidorSMTP}" style="font-weight:bold" styleClass="text"/>
+						
+							<h:outputText value="Puerto SMTP :" styleClass="label"/>
+							<h:outputText value="#{facEmpresaEmisoraControlador.vercamposSeleccionado.puertoSMTP}" style="font-weight:bold" styleClass="text"/>
+							
+							<h:outputText value="Usuario SMTP:" styleClass="label"/>
+							<h:outputText value="#{facEmpresaEmisoraControlador.vercamposSeleccionado.userSMTP}" style="font-weight:bold" styleClass="text"/>	
+	
+							<h:outputText value="autentificación de SMTP :" styleClass="label"/>
+							<h:outputText value="#{facEmpresaEmisoraControlador.vercamposSeleccionado.sslSMTP}" style="font-weight:bold" styleClass="text"/>
+					
+							<h:outputText value="E-mail:" styleClass="label"/>
+							<h:outputText value="#{facEmpresaEmisoraControlador.vercamposSeleccionado.emailEnvio}" style="font-weight:bold" styleClass="text"/>
+							
+							<h:outputText value="Correo de Recepción:" styleClass="label"/>
+							<h:outputText value="#{facEmpresaEmisoraControlador.vercamposSeleccionado.correoRecepcion}" style="font-weight:bold" styleClass="text"/>
+						
+					</h:panelGrid>
+				</p:panel>
+			</p:dialog>
+		</h:form>
+		<p:dialog header="Mensaje de confirmacion"  widgetVar="confirmation" id="MensajConfirma" modal="true" >
+			<p:panel id="blodialog">
+			<h:outputLabel value="Esta seguro que desea guardar el registro?"/><br/>
+			<h:panelGroup style=" font-size: 1.1em;font-weight:400; display: block; text-align: center;padding: 10px;">
+				<p:commandButton value="Yes" icon="ui-icon-check" oncomplete="confirmation.hide(),bloquearPagina.hide()" onstart="bloquearPagina.show()" action="#{facEmpresaEmisoraControlador.insert('Guardar')}" 
+					   		update=":frm1:datosEmpresaEmisora,:frm1:listasUsuarios,:frm1:growl" />  
+				<p:commandButton value="Not" icon="ui-icon-closethick" oncomplete="confirmation.hide()" />    
+				
+				<p:blockUI block="blodialog" widgetVar="bloquearPagina">  
+				       Actualizando Registro...<br />  
+					<p:graphicImage value="/imagenes/ajax-loader.gif"/>  
+				</p:blockUI>
+			</h:panelGroup>
+			</p:panel>
+		</p:dialog>
+	</ui:define>
+</ui:composition>
+
+</html>

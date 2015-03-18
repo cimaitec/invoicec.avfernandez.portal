@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<head>
+
+	<link href="/estilos/estilos.css" rel="stylesheet"
+		type="text/css" />
+
+	<title><ui:insert name="tituloPagina">Coloque el titulo de la pagina</ui:insert></title>
+
+</head>
+
+<body bgcolor="#ffffff">
+
+<table style="border: 1px solid #CAD6E0" align="center" cellpadding="0"
+	cellspacing="0" border="0" width="400">
+	<tbody>
+
+
+		<tr>
+			<td height="42" align="center" valign="middle" width="100%">
+			<h:graphicImage value="/imagenes/clearminds.png" />
+			</td>
+		</tr>
+		<tr>
+			<td class="tituloFormulario" height="30" align="center" valign="middle"
+				width="100%"><ui:insert name="tituloFormulario">Coloque el titulo</ui:insert>
+			</td>
+		</tr>
+		<tr>
+			<td height="1" width="100%" bgcolor="#CAD6E0"></td>
+		</tr>
+
+		<tr>
+			<td width="100%" colspan="2">
+			<table width="100%" style="height: 150px" align="left"
+				cellpadding="0" cellspacing="0" border="0">
+				<tbody>
+					<tr>
+						<td align="center" width="100%" valign="middle"><ui:insert
+							name="contenido">
+							Aqui va el contenido
+						</ui:insert></td>
+					</tr>
+				</tbody>
+			</table>
+			</td>
+		</tr>
+
+		<tr>
+			<td class="autor" colspan="2" valign="bottom" height="1" width="100%"
+				bgcolor="#CAD6E0"><h:outputText value="Desarrollador por:" />
+				<ui:insert name="autor"/>
+			</td>
+		</tr>
+	</tbody>
+</table>
+</body>
+
+</html>

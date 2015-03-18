@@ -1,0 +1,32 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+	<ui:composition template="/templates/clearTemplate.xhtml">
+		<ui:define name="tituloPagina">
+			<h:outputText value="Mantenimiento de Usuarios" />
+		</ui:define>
+		<ui:define name="tituloFormulario">
+			<h:outputText value="Mantenimiento de Usuarios" />
+		</ui:define>
+		<ui:define name="contenido">
+			<h:form id="frmdialogo">
+				<p:panel id="panel1" header="DIALOGO">
+						<p:panelGrid columns="2">
+							<p:dialog id="dialogo1" header="Mi Dialogo" widgetVar="dlg1">
+								<h:outputText value="Mi primer Dialogo" />
+								<p:commandButton value="Cerrar" onclick="dlg1.hide()"/>
+							</p:dialog>
+							<p:commandButton value="Abrir" onclick="dlg1.show()" />
+						</p:panelGrid>
+				</p:panel>
+			</h:form>
+		</ui:define>
+		<ui:define name="autor">
+			<h:outputText value="Grupo 2 - Bolivar Salazar" />
+		</ui:define>
+	</ui:composition>
+</html>

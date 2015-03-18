@@ -1,0 +1,30 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:composition template="/templates/cimaTemplate.xhtml">
+		<ui:define name="tituloPagina">
+			<h:outputText value=".::Ingreso Documento Recepción::." />
+		</ui:define>
+	
+		<ui:define name="tituloFormulario">
+			<h:outputText value="Documento Recepción" />
+		</ui:define>
+		
+		<ui:define name="contenido">
+			<h:form id="frm1" action="frm1" method="post" enctype="multipart/form-data" prependId="true">
+				<p:remoteCommand name="onload" action="#{comprobantesRecepcionControladores.cargarDatos}" autorun="true" update="datosRecepcion"/>
+				
+				<p:growl id="growl" showDetail="true" />
+				
+				<p:panel id="datosRecepcion">						
+						<p:fileUpload label="Seleccionar"  uploadLabel="Validar Archivo" oncomplete="bloquearPagina.show()" cancelLabel="Cancelar" fileUploadListener="#{comprobantesRecepcionControladores.CargarArchivo}" 
+							mode="advanced" dragDropSupport="false" update=":frm1:growl" sizeLimit="100000" allowTypes="/(\.|\/)(xml|gif|XML)$/" />
+				</p:panel>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/templates/cimaTemplate.xhtml">
+	<ui:define name="tituloPagina">
+		<h:outputText value="Mantenimiento de Libros" />
+	</ui:define>
+	<ui:define name="tituloFormulario">
+		<h:outputText value="Mantenimiento de Libros" />
+	</ui:define>
+	<ui:define name="contenido">
+		<p:panel id="pnLib" header="Mantenimiento de Libros">
+			<h:form id="form1">
+				<h:panelGroup id="idPanel" >
+				<p:growl/>
+			     <p:messages/>
+				<!-- p:messages sale el mensaje donde lo coloque mientras que el
+				 growl en cualquier parte  pero solo va uno -->
+					<p:panelGrid columns="2">
+						<h:outputText value="Codigo:" />
+						<h:inputText value="#{controladorLibros.beanLibro.codigo}" />
+						<h:outputText value="Titulo:" />
+						<h:inputText value="#{controladorLibros.beanLibro.titulo}" />
+						<h:outputText value="Categoria:" />
+						<p:selectOneMenu value="#{controladorLibros.valorCategoria}">
+							<f:selectItems value="#{controladorLibros.categorias}" var="cat"
+								itemLabel="#{cat.nombre}" itemValue="#{cat.id}">
+							</f:selectItems>
+						</p:selectOneMenu>
+
+						<h:outputText value="Autor:" />
+
+						<p:selectOneMenu value="#{controladorLibros.valorAutor}">
+							<f:selectItems value="#{controladorLibros.autores}" var="aut"
+								itemLabel="#{aut.nombre} #{aut.apellido}"
+								itemValue="#{aut.codigo}">
+							</f:selectItems>
+						</p:selectOneMenu>
+
+						<h:outputText value="Año:" />
+						<h:inputText value="#{controladorLibros.beanLibro.anio}" />
+
+						<h:outputText value="Precio:" />
+						<h:inputText value="#{controladorLibros.beanLibro.precio}" />
+
+					</p:panelGrid>
+				</h:panelGroup>
+				<p:commandButton action="#{controladorLibros.agregarLibro}"
+					value="Insertar" update="idDataTable,idPanel" />
+				<p:commandButton action="#{controladorLibros.actualizarLibro}"
+					value="Actualizar" update="idDataTable,idPanel" />	
+							
+				<p:dataTable id="idDataTable" var="lib" rows="5" paginator="true"
+					value="#{controladorLibros.libros}">				
+					
+					<p:column sortBy="#{lib.codigo}" headerText="Codigo">
+						<h:outputText value="#{lib.codigo}" />
+					</p:column>
+					<p:column headerText="Titulo" sortBy="#{lib.titulo}">
+						<h:outputText value="#{lib.titulo}" />
+					</p:column>
+					<p:column headerText="categoria" sortBy="#{lib.categoria.nombre}">
+						<h:outputText value="#{lib.categoria.nombre}" />
+					</p:column>
+					<p:column headerText="Autor" sortBy="#{lib.autor.nombre} #{lib.autor.apellido}">
+						<h:outputText value="#{lib.autor.nombre} #{lib.autor.apellido}" />
+					</p:column>
+					<p:column headerText="Anio" sortBy="#{lib.anio}" >
+						<h:outputText value="#{lib.anio}" />
+					</p:column>
+					<p:column headerText="Costo" sortBy="#{lib.precio}">
+						<h:outputText value="#{lib.precio}" />
+					</p:column>
+					<p:column headerText="">
+						<p:commandButton value="Seleccionar" update=":form1:idPanel">
+						<f:setPropertyActionListener target="#{controladorLibros.beanLibro}" value="#{lib}" ></f:setPropertyActionListener>
+						<f:setPropertyActionListener target="#{controladorLibros.valorCategoria}" value="#{lib.categoria.id}" />
+						<f:setPropertyActionListener target="#{controladorLibros.valorAutor}" value="#{lib.autor.codigo}" />
+						</p:commandButton>
+					</p:column>
+					<p:column headerText="">
+						<p:commandButton value="Eliminar"  action="#{controladorLibros.eliminarLibro}" update=":form1">
+						<f:setPropertyActionListener target="#{controladorLibros.beanLibro}" value="#{lib}" />
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+             
+			</h:form>
+		</p:panel>
+	</ui:define>
+	<ui:define name="autor">
+		<h:outputText value="Yuly..." />
+	</ui:define>
+
+</ui:composition>
+</html>

@@ -1,0 +1,1 @@
+JAVA_OPTS="-Xms1536m -Xmn768m -Xmx1536m -XX:MaxPermSize=3072m -XX:+UseConcMarkSweepGC -XX:+UseParNewGC -Dsun.rmi.dgc.client.gcInterval=3600000 -Dsun.rmi.dgc.server.gcInterval=3600000 -XX:CMSInitiatingOccupancyFraction=50 -XX:+CMSScavengeBeforeRemark -XX:+CMSClassUnloadingEnabled"

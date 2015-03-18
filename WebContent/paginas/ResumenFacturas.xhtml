@@ -1,0 +1,96 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+	<ui:composition template="/templates/cimaTemplate.xhtml">
+		<ui:define name="tituloPagina">
+			<h:outputText value="FORMULARIO FACTURA" />
+		</ui:define>
+		<ui:define name="paginaformulario">
+			<h:outputText value="FORMULARIO FACTURA" />
+		</ui:define>
+		<ui:define name="contenido">
+			<h:form action="frm1">
+				<p:panel id="panel1" header="Resumen Facturas">
+					<h:panelGroup id="pagPrincipal">
+						<p:dataTable value="#{facturaDataManager.factura}" var="det">
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Numero Factura" />
+								</f:facet>
+								<h:outputText value="#{det.numero}" />
+							</p:column>
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Cliente" />
+								</f:facet>
+								<h:outputText value="#{det.cliente.nombre} #{det.cliente.apellido}" />
+							</p:column>
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Fecha" />
+								</f:facet>
+								<h:outputText value="#{det.fecha}" />
+							</p:column>
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Detalle" />
+								</f:facet>
+								<p:commandButton value="Detalle facturaccc" onclick="dlg1.show()" action="#{facturaDataManager.datosFactura}" 
+								update=":frm2:panel2">
+									<f:setPropertyActionListener target="#{facturaDataManager.fact}"  value="#{det}" />
+								</p:commandButton>
+							</p:column>
+						</p:dataTable>
+					</h:panelGroup>
+				</p:panel>
+			</h:form>
+		</ui:define>
+	<ui:define name="autor"></ui:define>
+	<ui:define name="dialogo">
+		<h:form id="frm2">
+			<p:panelGrid columns="2">
+				<p:dialog id="dialogo1" header="Detalle" modal="true" widgetVar="dlg1">
+					<p:panel id="panel2">
+					
+						<h:outputText value="Numero Factura: " />
+						<h:outputText value="#{facturaDataManager.fact.numero}" />
+						<h:outputText value="Total Factura: " />
+						<h:outputText value="#{facturaDataManager.fact.total}" />
+						<p:dataTable value="#{facturaDataManager.fact.detalles}" var="detFac">
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Codigo Libro" />
+								</f:facet>
+								<h:outputText value="#{detFac.libro.codigo}" />
+							</p:column>
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Cliente" />
+								</f:facet>
+								<h:outputText value="#{detFac.libro.titulo}" />
+							</p:column>
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Autor" />
+								</f:facet>
+								<h:outputText value="#{detFac.libro.autor.nombre} #{detFac.libro.autor.apellido}" />
+							</p:column>
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Cantidad" />
+								</f:facet>
+								<h:outputText value="#{detFac.cantidad}" />
+							</p:column>
+						</p:dataTable>
+						<p:commandButton value="Salir" onclick="dlg1.hide()"/>
+					</p:panel>
+				</p:dialog>
+			</p:panelGrid>
+		</h:form>
+	</ui:define>
+	</ui:composition>
+</html>

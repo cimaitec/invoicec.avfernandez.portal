@@ -1,0 +1,224 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+ <ui:composition template="/templates/cimaTemplate.xhtml">
+	<ui:define name="tituloPagina">
+		<h:outputText value=".::Documentos::." />
+	</ui:define>
+
+	<ui:define name="tituloFormulario">
+		<h:outputText value="Documentos" styleClass="titulo" />
+	</ui:define>
+	<ui:define name="contenido" >
+	<style>
+	.style1{
+		text-align: right;
+	}
+	.style3{
+		text-align: left;
+	}
+	.style2{
+		text-align: center;
+		background: blue;
+		color: white;
+		font-weight: bold;
+	}
+	.imageClass{  
+    	display: block;  
+    	background-image: url('/imagenes/pdf.png') no-repeat 100%;  
+    }  
+	</style>
+	<f:view>
+		<h:form id="frm1" styleClass="form" >
+		 
+		<p:growl id="growl" showDetail="true" sticky="true" />  
+		 	<p:panel id="datosEmisorPanel" > 	
+		 			<p:panelGrid style="margin: 0 auto;" id="panelG">
+					<p:row>
+					
+					<p:column>
+						<p:panelGrid>
+						<p:row>
+							<p:column style="text-align: center;" colspan="2">
+								<strong><h:outputLabel styleClass="label" value="Seleccionar Archivo"/></strong>
+								<p:selectManyCheckbox style="text-align: center;" value="#{cabDocumentoMB.selectedOptionsEmail}">
+									<f:selectItem itemValue="PDF" itemLabel="PDF"/>
+									<f:selectItem itemValue="XML" itemLabel="XML"/>
+								</p:selectManyCheckbox>
+							</p:column>
+						</p:row>
+						<p:row>
+							<p:column colspan="2">
+								<strong><h:outputLabel styleClass="label" value="E-Mails" /></strong><br></br>
+								<h:inputTextarea value="#{cabDocumentoMB.correos}" cols="40"/><br></br>
+							</p:column>
+						</p:row>
+						<p:row>
+						<p:column colspan="2">
+							<strong><h:outputLabel styleClass="style1" value="Formato: email1@email.com,email2@email.com" /></strong>
+						</p:column>
+						</p:row>
+						<p:row>
+							<p:column rowspan="2" >
+								<p:commandButton icon="ui-icon-mail-closed" value="  Envio normal" id="bto_enviarEmail" 
+								oncomplete="bloquearPagina.hide()" 
+								onstart="bloquearPagina.show()" 
+								action="#{cabDocumentoMB.EnviarCorreos('Normal')}" update="growl">
+								</p:commandButton>
+									<p:blockUI block="frm1" widgetVar="bloquearPagina">  
+								       Enviando correo...<br />  
+									<p:graphicImage value="/imagenes/ajax-loader.gif"/>  
+									</p:blockUI>
+							</p:column>
+							<p:column rowspan="2" >
+								<p:commandButton value="  Envio ZIP" icon="ui-icon-tag" action="#{cabDocumentoMB.EnviarCorreos('ZIP')}" oncomplete="bloquearPagina.hide()" onstart="bloquearPagina.show()"  update="growl"> </p:commandButton> <br/>
+							</p:column>
+						</p:row>
+					
+					</p:panelGrid>
+				 </p:column>
+					
+					<p:column colspan="0">
+					<p:panelGrid>
+							<p:row>
+								<p:column colspan="1" styleClass="style1">
+									<strong><h:outputLabel styleClass="label" size="30"  value="Identificacón"/></strong>
+								</p:column>
+								<p:column colspan="1" styleClass="style3">
+									<h:inputText styleClass="text" style="font-weight: bold;" value="#{cabDocumentoMB.ruc}"  placeholder="Cédula/RUC/Pasaporte"/>
+								</p:column>
+					   		</p:row>
+							<p:row>
+								<p:column colspan="1" styleClass="style1"> 
+									<strong><h:outputLabel styleClass="label" size="30" value="Nombres:" /></strong>
+								</p:column>
+								<p:column colspan="1" styleClass="style3"> 
+									<h:inputText styleClass="text" style="font-weight: bold; text-transform: uppercase" value="#{cabDocumentoMB.razonSocial}"/>
+								</p:column>
+							</p:row>
+							<p:row>
+								<p:column styleClass="style1">
+									<strong><h:outputLabel styleClass="label"  value="Numero del Documento:" /></strong>
+								</p:column>
+								<p:column styleClass="style3">
+									<h:inputText value="#{cabDocumentoMB.numDocumento}" size="30" title="Numero del Documento" />
+								</p:column>
+							</p:row>
+							<p:row>
+								<p:column styleClass="style1">
+									<strong><h:outputLabel styleClass="label"  value="Tipo de Documento:" /></strong>
+								</p:column>
+								<p:column styleClass="style3">
+									<p:selectOneMenu value="#{cabDocumentoMB.seleccionTipo}">
+										<f:selectItems value="#{cabDocumentoMB.tipo}"/>
+									</p:selectOneMenu>
+								</p:column>
+							</p:row>
+							<p:row>
+								<p:column styleClass="style1">
+									<strong><h:outputLabel styleClass="label"  value="Estados:" /></strong>
+								</p:column>
+								<p:column styleClass="style3">
+									<p:selectOneMenu value="#{cabDocumentoMB.seleccionTipoEstado}">
+										<f:selectItems value="#{cabDocumentoMB.tipoEstados}"/>
+									</p:selectOneMenu>
+								</p:column>
+							</p:row>
+					
+					
+
+					<p:row>
+						<p:column >
+							<strong><h:outputLabel styleClass="label" value="Fecha Inicial:" /></strong><br></br>
+							<p:calendar id="txt_inicial" value ="#{cabDocumentoMB.fechaInicio}" pattern="yyyy-MM-dd" mask="true" mode="popup" showOn="button" readonlyInput="true">
+							<f:convertDateTime type="date"  dateStyle="short" pattern="yyyy-MM-dd" />
+							</p:calendar>
+						</p:column>
+						<p:column >
+							<strong><h:outputLabel styleClass="label" value="Fecha Final:" /></strong><br></br>
+							<p:calendar id="txt_final" value ="#{cabDocumentoMB.fechaFinal}" pattern="yyyy-MM-dd" mask="true" mode="popup" showOn="button"  readonlyInput="true">
+							<f:convertDateTime type="date"  dateStyle="short" pattern="yyyy-MM-dd" />
+							</p:calendar>							 
+						</p:column>
+					</p:row>
+					
+					<p:row>
+						<p:column style="text-align: center;" colspan="2"> 
+							<p:commandButton value="  Busqueda " icon="ui-icon-search" 
+											 title="Buscar Filtrado" 
+											 action="#{cabDocumentoMB.findDocumentos()}" 
+											 update=":frm1:listaDocumentos,:frm1:datosEmisorPanel">
+							</p:commandButton>
+						</p:column>
+					</p:row>
+					
+				 </p:panelGrid>
+			</p:column>			
+			</p:row>
+		 	</p:panelGrid>
+		 	<br></br>
+			    <p:panel id="datosDetalle22" >
+				<h:panelGroup id="listaDocumentos">
+				<!--  selectionMode="multiple"-->
+			<p:dataTable id="lazyDataTable" value="#{cabDocumentoMB.allDocumentos}"  var="documento" paginator="true" rows="10"  rowsPerPageTemplate="10,50,100"
+				selection="#{cabDocumentoMB.seleccionDocu}" update=":frm1:listaDocumentos,:frm1:datosEmisorPanel"
+				style="width: 85%;margin-left: 10%;margin-right: 10%;" >
+				 
+				<p:column headerText="Identificación" style="width:10%">
+					<h:outputText value="#{documento.identificacionComprador}" />
+				</p:column>
+				<p:column headerText="Razón Social" style="width:30% ; text-transform: uppercase" >
+					<h:outputText value="#{documento.razonSocialComprador}" />
+				</p:column>
+				<p:column headerText="Documento/No de Documento" style="width:15% ; text-align:center">
+					<h:outputText value="#{documento.descCodDocumento}" />
+					<br/><h:outputText value="#{documento.id.serie}" />
+				</p:column>
+				<p:column headerText="Importe total" style="width:10% ; text-align:right">
+					<h:outputText value="#{documento.importeTotal}" />
+				</p:column>
+				<p:column headerText="Fecha Emision" style="width:10% ; text-align:center">
+					<h:outputText value="#{documento.fechaEmision}" />
+				</p:column>
+				<p:column>
+					<f:facet name="header">Ambiente</f:facet>
+					<h:outputText value="#{documento.descAmbiente}" />
+				</p:column>
+				<p:column headerText="Documento Sustento" style="width:15% ; text-align:center">
+				
+					<small><h:outputText value="#{documento.descCodDocSustento}" /></small>
+					<br/><small><h:outputText value="#{documento.numDocSustento}" /></small>
+					
+				</p:column>
+				<!--  
+				<p:column>
+					<f:facet name="header">Secuencial Sustento</f:facet>
+					<h:outputText value="#{documento.numDocSustento}" />
+				</p:column>
+				-->
+				<p:column headerText="PDF">
+					<p:commandLink action="#{cabDocumentoMB.pdf(documento,'')}" ajax="false">
+						<p:graphicImage value="/imagenes/pdf.png"></p:graphicImage>
+						<f:setPropertyActionListener target="#{cabDocumentoMB.documentos}" value="#{documentos}"></f:setPropertyActionListener>
+					</p:commandLink>  
+				</p:column>
+				<p:column headerText="XML">
+					<p:commandLink  actionListener="#{cabDocumentoMB.xml(documento,'')}" ajax="false">
+						<p:graphicImage value="/imagenes/xml.png"></p:graphicImage>
+						<f:setPropertyActionListener target="#{cabDocumentoMB.documentos}" value="#{documentos}"></f:setPropertyActionListener>
+					</p:commandLink>  
+				</p:column>
+				
+				<p:column selectionMode="multiple">
+				</p:column>
+			</p:dataTable>
+	 
+			
+		</h:panelGroup>
+		</p:panel>
+		</p:panel>	 
+	 </h:form>
+	</f:view>
+</ui:define>
+</ui:composition>
+</html>

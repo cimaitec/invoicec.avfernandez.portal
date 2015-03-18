@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+	<ui:composition template="/templates/cimaTemplate.xhtml">
+		<ui:define name="tituloPagina">
+			<h:outputText value="FORMULARIO FACTURA" />
+		</ui:define>
+		<ui:define name="paginaformulario">
+			<h:outputText value="FORMULARIO FACTURA" />
+		</ui:define>
+		<ui:define name="contenido">
+		<h:form id="form2eq">
+		<p:messages autoUpdate="true"/>
+			<p:panel id="panel2" header="EQUIPOS">
+				<h:panelGroup id="pagCateg">
+					<h:panelGrid columns="2">
+						<h:outputText value="Categorias: " />
+						<p:selectOneMenu value="#{equiposControlador.valorcategoria}">
+							<f:selectItems value="#{equiposControlador.categ}" var="cat" itemLabel="#{cat.nombre}" itemValue="#{cat.id}" />
+							<p:ajax event="change" listener="#{equiposControlador.buscarEquipo()}" update="form2eq"/>
+						</p:selectOneMenu>
+						<h:outputText value="Equipos: " />
+						<p:selectOneMenu value="#{equiposControlador.valorequipo}">
+							<f:selectItems value="#{equiposControlador.equip}" var="equ" itemLabel="#{equ.nombre}" itemValue="#{equ.id}" />
+						</p:selectOneMenu>
+					</h:panelGrid>
+				</h:panelGroup>
+			</p:panel>
+		</h:form>
+		</ui:define>
+		<ui:define name="autor">
+			<h:outputText value="Grupo 2 - Bolivar Salazar" />
+		</ui:define>
+	</ui:composition>
+</html>

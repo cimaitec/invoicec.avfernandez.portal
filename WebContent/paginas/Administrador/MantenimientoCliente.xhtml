@@ -1,0 +1,256 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/templates/cimaTemplate.xhtml">
+
+	<ui:define name="tituloPagina">
+		<h:outputText value=".::Clientes::." />
+	</ui:define>
+
+	<ui:define name="tituloFormulario">
+		<h:outputText value="Clientes" />
+	</ui:define>
+
+
+<ui:define name="contenido">
+	<h:form id="frm1" action="frm1" method="post">
+		<p:remoteCommand name="onload" action="#{facClienteControlador.cargarDatos}" autoRun="true" update="panelDatos,panelClientes,panelTransportista,panelClientesDetalle" >
+		</p:remoteCommand>
+			<p:growl id="growl" showDetail="true" sticky="true" /> 
+			<p:panel id="panelDatos" >
+				<p align="center"  class="titulo" > Ingreso de Usuarios/Clientes/Proveedores </p>
+				<h:panelGrid columns="2">
+					<h:outputText value="Tipo de usuario :" styleClass="label" />
+					<h:panelGroup>
+						<p:selectOneMenu id="txtTipoUsuario" value="#{facClienteControlador.tipoCliente}" >
+							<f:selectItems value="#{facClienteControlador.li_tipUsuario}" ></f:selectItems>
+							<p:ajax  event="change" listener="#{facClienteControlador.llenarTablaVehiculo()}" update=":frm1:panelTransportista,:frm1:growl">
+							</p:ajax>
+						</p:selectOneMenu>
+						<h:outputText value="*" style="color: #FF0000;"/>
+					</h:panelGroup>
+
+					<h:outputText value="Identificación del usuario :" styleClass="label" />
+					<h:panelGroup>
+						<p:selectOneMenu  id="txtTipoIdentificacion" value="#{facClienteControlador.tipoIdentificacion}" disabled="#{facClienteControlador.grisar}">
+							<f:selectItems value="#{facClienteControlador.li_tipIdentificacion}"></f:selectItems>
+							<p:ajax event="change" value="#{facClienteControlador.tipoIdentificacion}"></p:ajax>
+						</p:selectOneMenu>
+						<h:outputText value="*" style="color: #FF0000;"/>
+					</h:panelGroup>
+					 
+					<h:outputText value="Empresa :" styleClass="label" />
+					<h:panelGroup>
+						<p:selectOneMenu  id="txtRucEmpresa" value="#{facClienteControlador.ruc}" disabled="#{facClienteControlador.grisar}" >
+							<f:selectItems value="#{facClienteControlador.li_RucEmpresa}"></f:selectItems>
+						</p:selectOneMenu>
+						<h:outputText value="*" style="color: #FF0000;"/>
+					</h:panelGroup>
+				
+					<h:outputText value="Identificación del Usuario :" styleClass="label" />
+					<h:panelGroup>
+						<h:inputText   id="txtRucCliPro" value="#{facClienteControlador.rucCliente}"  maxlength="13" disabled="#{facClienteControlador.grisar}">
+							<p:ajax event="keyup" listener="#{facClienteControlador.validarCampoUsuario()}" update=":frm1:txtRazonSocial,:frm1:txtDirecion,:frm1:txtCorreo,:frm1:txtRise,:frm1:txtTelefono,:frm1:growl"> </p:ajax>
+							<p:ajax event="blur" listener="#{facClienteControlador.ValidarIdentificacion(facClienteControlador.rucCliente)}"   update=":frm1:growl" />
+						</h:inputText>
+						<h:outputText value="*" style="color: #FF0000;"/>
+					</h:panelGroup>
+				
+					<h:outputText value="Razón Social :" styleClass="label" />
+					<h:panelGroup>
+						<h:inputText id="txtRazonSocial" style="width : 380px;" value="#{facClienteControlador.razonSocial}" />
+						<h:outputText value="*" style="color: #FF0000;"/>
+					</h:panelGroup>
+					
+					<h:outputText value="Dirección :" styleClass="label" />
+					<h:inputTextarea id="txtDirecion" value="#{facClienteControlador.direccion}" rows="3" style="width : 380px;" />
+					
+					<h:outputText value="Correo electronico :" styleClass="label" />
+					<h:panelGroup>
+						<h:inputText id="txtCorreo" value="#{facClienteControlador.email}" title="alguien@example.com" style="width : 380px;" />
+						<h:outputText value="*" style="color: #FF0000;"/>
+					</h:panelGroup>
+					
+					<h:outputText value="Rise :" styleClass="label" />
+					<h:inputText id="txtRise" value="#{facClienteControlador.rise}" />
+					
+					<h:outputText value="Teléfono :" styleClass="label" />
+					<h:inputText id="txtTelefono" value="#{facClienteControlador.telefono}" maxlength="10" >
+						<p:ajax event="keyup" listener="#{facClienteControlador.verificarTelefono}" update=":frm1:growl"> </p:ajax>
+					</h:inputText>
+	
+				</h:panelGrid>							
+			</p:panel>
+			<p:panel id="panelTransportista" visible="#{facClienteControlador.activoPanel}">
+				<p:commandButton value="Añadir Vehiculo" icon="ui-icon-circle-plus" action="#{facClienteControlador.añadirVehiculo}" update=":frm1:panelTransportista,:frm1:growl" ></p:commandButton>
+				<p:dataTable styleClass="tabla" id="dataVehiculo" rowStyleClass="fila1" var="transporte" value="#{facClienteControlador.listTrasnporte}" binding="#{facClienteControlador.datosTablaVehiculo}"
+				rows="10" paginator="true" 
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15">
+					<f:facet name="header">
+						<h:outputText value="Ingreso de vehículo" styleClass="cabeceraTabla"/>
+					</f:facet>
+					<p:column headerText="Placa" style="width:10%">
+						<h:inputText value="#{transporte.id.placa}" style="width:100%" />
+					</p:column>
+					<p:column headerText="Descripción">
+						<h:inputText value="#{transporte.descripcion}" style="width:100%" />
+					</p:column>
+					<p:column headerText="Marca" style="width:15%">
+						<h:inputText value="#{transporte.marca}" style="width:100%" />
+					</p:column>
+					<p:column headerText="Modelo" style="width:15%">
+						<h:inputText value="#{transporte.modelo}" style="width:100%" />
+					</p:column>
+					<p:column headerText="Chasis" style="width:15%">
+						<h:inputText value="#{transporte.chasis}" style="width:100%"  />
+					</p:column>
+					<p:column headerText="Nombre del conductor" style="width:20%">
+						<h:inputText value="#{transporte.conductor}" style="width:100%"  />
+					</p:column>
+					<p:column headerText="Acción" style="width:6%">
+						<h:panelGroup>
+							<p:commandButton title="Borrar" icon="ui-icon-trash" styleClass="text" oncomplete="confirmationBorra.show()"  
+								update=":frm1:growl">
+							</p:commandButton>
+							<p:dialog header="Mensaje de confirmacion"  widgetVar="confirmationBorra" >
+								<p:ajax event="close" update=":frm1:panelDatos,:frm1:panelClientes,:frm1:panelTransportista,:frm1:panelClientesDetalle" listener="#{facClienteControlador.noGrisarTodo()}"/>
+						    	<p:commandButton icon="ui-icon-alert" disabled="true"></p:commandButton>
+						    	<h:outputLabel  value="Esta seguro que desea borrar este vehiculo?" /><br/>
+						    	<p align="center">
+					    		<p:commandButton value="Yes" icon="ui-icon-check" oncomplete="confirmation.hide()"  action="#{facClienteControlador.borrarVehiculo}" update=":frm1:panelTransportista,:frm1:growl" />  
+						    	<p:commandButton value="Not" icon="ui-icon-close" oncomplete="confirmation.hide()"/>
+						   		</p>    
+							</p:dialog>
+						</h:panelGroup>
+					</p:column>
+				</p:dataTable>
+			</p:panel>
+			<p:panel id="panelClientes">
+				<h:panelGrid columns="3">
+					<p:commandButton value="Guardar" styleClass="text" oncomplete="confirmation.show()" icon="ui-icon-disk" 
+						update=":frm1:growl,:frm1:panelDatos,:frm1:panelClientes,:frm1:panelTransportista,:frm1:panelClientesDetalle">
+					</p:commandButton>
+					<p:commandButton value="Limpiar" icon="ui-icon-arrowrefresh-1-e" action="#{facClienteControlador.cargarDatos}" update = ":frm1:growl,:frm1:panelDatos,:frm1:panelClientes,:frm1:panelTransportista,:frm1:panelClientesDetalle" 
+										title="Limpiar los campos"/>					
+				</h:panelGrid>
+			</p:panel>
+			<p:panel id="panelClientesDetalle">
+			 	<p:dataTable var="cliente" value="#{facClienteControlador.listCliente}" filteredValue="#{facClienteControlador.filtrosCliente}"
+			 	rows="10" paginator="true" styleClass="tabla" rowStyleClass="fila1" binding="#{facClienteControlador.datosTablaCliente}"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15">
+					<f:facet name="header">
+						<h:outputText value="Datos del usuario" styleClass="cabeceraTabla"/>
+					</f:facet>
+					<p:column headerText="Tipo Usuario" sortBy="#{cliente.tipoCliente}" filterBy="#{cliente.tipoCliente}">
+						<h:outputText value="#{cliente.tipoCliente}" />
+					</p:column>
+					<p:column headerText="Empresa" sortBy="#{cliente.id.ruc}" filterBy="#{cliente.id.ruc}">
+						<h:outputText value="#{cliente.id.ruc}" />
+					</p:column>
+					<p:column headerText="Identi. del usuario" sortBy="#{cliente.id.rucCliente}" filterBy="#{cliente.id.rucCliente}">
+						<h:outputText value="#{cliente.id.rucCliente}" />
+					</p:column >
+					<p:column headerText="Razón Social" sortBy="#{cliente.razonSocial}" filterBy="#{cliente.razonSocial}">
+						<h:outputText value="#{cliente.razonSocial}" />
+					</p:column>
+					<p:column headerText="Dirección">
+						<h:outputText value="#{cliente.direccion}" />
+					</p:column>
+					<p:column headerText="Email">
+						<h:outputText value="#{cliente.email}" />
+					</p:column>
+					<p:column headerText="Tipo Identificación" sortBy="#{cliente.tipoIdentificacion}">
+						<h:outputText value="#{cliente.tipoIdentificacion}" />
+					</p:column>
+					<p:column headerText="Rise">
+						<h:outputText value="#{cliente.rise}" />
+					</p:column>
+					<p:column headerText="Teléfono">
+						<h:outputText value="#{cliente.telefono}" />
+					</p:column >
+					<p:column headerText="Vehículos" style="width:3%" >
+						<p:commandButton  icon="ui-icon-search" title="View" oncomplete="vehiculoDetalles.show()"  action="#{facClienteControlador.llenarDialogoVehiculo}" update=":frm1:growl,:formdialog:vehiculoDlg"  >
+							<f:setPropertyActionListener target="#{facClienteControlador.verCamposClientes}" value="#{cliente}" >
+							</f:setPropertyActionListener>	
+						</p:commandButton>
+					</p:column>
+					<p:column headerText="Accion">
+						<h:panelGrid columns="2" title="Acciones">
+							<p:commandButton title="Modificar Registro" icon="ui-icon-document" action="#{facClienteControlador.llenarCamposModificar('Modificar')}" update=":frm1:panelDatos,:frm1:panelTransportista" >
+							</p:commandButton>
+							<p:commandButton title="Eliminar Registro" icon="ui-icon-trash" oncomplete="confirmationEliminado.show()" action="#{facClienteControlador.llenarCamposModificar('verificar')}" update=":frm1:panelDatos,:frm1:panelTransportista,:frm1:panelClientesDetalle,:frm1:panelClientes" >
+								<f:setPropertyActionListener target="#{facClienteControlador.verCamposClientes}" value="#{cliente}" />
+							</p:commandButton>
+							<p:dialog  header="Mensaje de confirmacion"  widgetVar="confirmationEliminado" closable="false" resizable="false" >
+							<p:ajax event="close" update=":frm1:panelDatos,:frm1:panelTransportista,:frm1:panelClientesDetalle" listener="#{facClienteControlador.llenarCamposModificar('cancelar')}"/>
+							    	<h:outputLabel value="Esta seguro que desea deshabilitar el Cliente?"/><br/>
+							    	<p align="center">
+							    		<p:commandButton value="Yes"  icon="ui-icon-check" oncomplete="confirmationEliminado.hide()" action="#{facClienteControlador.llenarCamposModificar('Eliminar')}"  update=":frm1:panelDatos,:frm1:panelTransportista,:frm1:panelClientesDetalle,:frm1:growl,:frm1:panelClientes" />  
+								    	<p:commandButton value="Not" icon="ui-icon-close" oncomplete="confirmationEliminado.hide()" action="#{facClienteControlador.llenarCamposModificar('cancelar')}" update=":frm1:panelDatos,:frm1:panelTransportista,:frm1:panelClientesDetalle,:frm1:panelClientes"/>
+							   		</p> 
+							</p:dialog>
+						</h:panelGrid>
+					</p:column>
+			 	</p:dataTable>
+			</p:panel>
+		</h:form>
+	</ui:define>
+	<ui:define name="dialogo">
+		<h:form id="formdialog">
+		<p:dialog header="Vehiculos Detalles" widgetVar="vehiculoDetalles" resizable="false" id="vehiculoDlg" modal="true"  
+              showEffect="clip" hideEffect="fold" >
+              <p:panel id="panelVehiculos" visible="#{facClienteControlador.activarVehiculo}">
+              	<p:dataTable id="taPlaca" var="placa"
+				value="#{facClienteControlador.listVehiculo}"
+				styleClass="tabla" rowStyleClass="fila1">
+					<p:column headerText="Identificación de Empresa" sortBy="#{placa.id.ruc}">
+						<h:outputText value="#{placa.id.ruc}" />
+					</p:column>
+					<p:column headerText="Identificación del transportista" sortBy="#{placa.id.rucCliente}">
+					<h:outputText value="#{placa.id.rucCliente}" />
+					</p:column>
+					<p:column headerText="Placa" sortBy="#{placa.id.placa}">
+						<h:outputText value="#{placa.id.placa}" />
+					</p:column>
+					<p:column headerText="Descripcion" sortBy="#{placa.descripcion}">
+						<h:outputText value="#{placa.descripcion}" />
+					</p:column>
+					<p:column headerText="Marca" sortBy="#{placa.marca}">
+						<h:outputText value="#{placa.marca}" />
+					</p:column>
+					<p:column headerText="Modelo" sortBy="#{placa.modelo}">
+						<h:outputText value="#{placa.modelo}" />
+					</p:column>
+						<p:column headerText="Chasis" sortBy="#{placa.chasis}">
+					<h:outputText value="#{placa.chasis}" />
+						</p:column>
+					<p:column headerText="Conductor" sortBy="#{placa.conductor}">
+						<h:outputText value="#{placa.conductor}" />
+					</p:column>
+				</p:dataTable>
+			</p:panel>
+         </p:dialog>
+		</h:form>
+		<p:dialog id="MensajConfirma" header="Mensaje de confirmacion"  widgetVar="confirmation" closable="false" resizable="false" modal="true">   	
+			<p:panel id="blodialog">
+				<h:outputLabel value="Esta seguro que desea guardar los cambios?"/><br/>
+		    	<p align="center">
+		    		<p:commandButton value="Yes"  icon="ui-icon-check" oncomplete="confirmation.hide(),bloquearPagina.hide()" onstart="bloquearPagina.show()" action="#{facClienteControlador.insert}"  update=":frm1:panelDatos,:frm1:panelClientes,:frm1:panelTransportista,:frm1:growl,:frm1:panelClientesDetalle" />  
+			    	<p:commandButton value="Not" icon="ui-icon-close" oncomplete="confirmation.hide()" update=":frm1:growl,:frm1:panelDatos,:frm1:panelClientes,:frm1:panelTransportista,:frm1:panelClientesDetalle"/>
+		   		</p> 
+		  		<p:blockUI block="blodialog" widgetVar="bloquearPagina">  
+			       Actualizando Registro...<br />  
+				<p:graphicImage value="/imagenes/ajax-loader.gif"/>  
+			</p:blockUI>
+			</p:panel>   
+		</p:dialog>
+	</ui:define>
+</ui:composition>
+
+</html>

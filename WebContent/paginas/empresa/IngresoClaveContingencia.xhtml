@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<ui:composition template="/templates/cimaTemplate.xhtml">
+		<ui:define name="tituloPagina">
+			<h:outputText value=".::Ingreso Clave de Contingencia::." />
+		</ui:define>
+	
+		<ui:define name="tituloFormulario">
+			<h:outputText value="Clave de Contingencia" />
+		</ui:define>
+		
+		<ui:define name="contenido">
+			<h:form id="frm1" action="frm1" method="post" enctype="multipart/form-data">
+				<p:remoteCommand name="onload" action="#{comprobantesRecepcionControladores.cargarDatos()}" autorun="true" update="datosRecepcion"/>
+				
+				<p:growl id="growl"  showDetail="true"/>
+				
+				
+				<p:panel id="datosRecepcion">							
+					<h:panelGroup>
+						<p:selectOneMenu id="datosAmbiente" value="#{clavesContingenciaControlador.ambiente}" required="true" >
+							<f:selectItem itemLabel="Seleccionar Ambiente" itemValue="0"  />
+							<f:selectItem itemLabel="Prueba" itemValue="1" />
+							<f:selectItem itemLabel="Produccion" itemValue="2" />
+						</p:selectOneMenu>
+					</h:panelGroup>
+				</p:panel>
+				<!--  <p:commandButton value="Submit" update="datosUpload" oncomplete="PF('uploadPrueba').show()"  />-->
+				<p:panel id="datosUpload">
+				 <p:fileUpload update="growl" process="datosAmbiente" id="uploadPrueba" label="Selecionar" uploadLabel="Ingresar"  cancelLabel="Cancelar" 
+						     fileUploadListener="#{clavesContingenciaControlador.handleFileUpload}"  dragDropSupport="false"
+						    mode="advanced" sizeLimit="5999990" fileLimit="1" allowTypes="/(\.|\/)(txt|TXT)$/"  showButtons="true" />	
+				</p:panel>
+				
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</html>

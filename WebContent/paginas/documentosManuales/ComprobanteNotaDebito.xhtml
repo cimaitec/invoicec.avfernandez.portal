@@ -1,0 +1,373 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	
+
+	
+    <ui:composition template="/templates/cimaTemplate.xhtml">
+		<ui:define name="tituloPagina">
+			<h:outputText value=".::Nota de Debito::." />
+		</ui:define>
+	
+		<ui:define name="tituloFormulario">
+			<h:outputText value="Nota de Debito" />
+		</ui:define>
+		
+		<ui:define name="contenido" >
+			<h:form id="frm1" action="frm1" >
+				<p:remoteCommand  name="onload" action="#{comprobanteNotaDebitoControlador.CargarDatos}" autorun="true" update="datosEmisorPanel,CabeceraDocumentoPanel,InfoCompradorPanel,InfoComprobanteventaModifica,detalleDocumentoPanel,detallesAdicionalesPanel"  />	       	       	       	
+       			<p:growl id="growl" showDetail="true" sticky="true" />
+       			<p:panel id="datosEmisorPanel">
+       				<h:outputText styleClass="titulo" value="INFORMACION TRIBUTARIA" />
+       						<h:panelGrid id="pnInfoTrib" columns="6" title="Informacion del Emisor" >
+			                				
+							<h:outputText styleClass="label" value="Ruc:" />
+							<h:outputText styleClass="text" value="#{comprobanteNotaDebitoControlador.empresa.ruc}" /> 
+							
+							<h:outputText  styleClass="label" value="Nombre Comercial:"/>
+							<h:outputText  styleClass="text" value="#{comprobanteNotaDebitoControlador.empresa.razonComercial}"/>
+							
+							<h:outputText   styleClass="label"  value="Razon Social:" />
+							<h:outputText   styleClass="text" value="#{comprobanteNotaDebitoControlador.empresa.razonSocial}" />
+							
+							<h:outputText   styleClass="label" value="Direccion Matriz:" />
+							<h:outputText   styleClass="text"  value="#{comprobanteNotaDebitoControlador.empresa.direccionMatriz}" />
+							
+							<h:outputText  styleClass="label" value="Contribuyente Especial:" />
+							<h:outputText  styleClass="text"  value="#{comprobanteNotaDebitoControlador.empresa.contribEspecial}" />
+							
+							<h:outputText   styleClass="label" value="Obligado Contabilidad:" />
+							<h:outputText styleClass="text" value="#{comprobanteNotaDebitoControlador.empresa.obligContabilidad}" />
+			          </h:panelGrid>
+       			</p:panel>
+       			<p:panel id="CabeceraDocumentoPanel" >
+       				<h:outputText styleClass="titulo" value="#{comprobanteNotaDebitoControlador.tipoDocumento}" />
+       				<h:panelGrid columns="6" title="Cabecera Factura" id="cabFactura">
+						
+						<h:outputText styleClass="label" value="Establecimiento:" />
+				        <h:panelGroup>
+							<p:inputText styleClass="text" value="#{comprobanteNotaDebitoControlador.codEstablecimiento}" disabled="true" readonly="true">
+							</p:inputText>
+	    					<p:commandButton oncomplete="establecimientosW.show()"  icon ="ui-icon-circle-zoomin" actionListener="#{comprobanteNotaDebitoControlador.llenaEstablecimientos}"  
+	    						update=":formdialog:establecimientoId,:frm1:CabeceraDocumentoPanel,:frm1:InfoCompradorPanel,:frm1:InfoCompradorPanel,:frm1:InfoComprobanteventaModifica,:frm1:detallesAdicionalesPanel,:frm1:detalleDocumentoPanel"/>
+							<h:outputText value="*" style="color: #FF0000;"/> 
+						</h:panelGroup>	
+									
+						<h:outputText styleClass="label" value="Punto Emisión:" />					
+					   <h:panelGroup>
+					   		<p:inputText styleClass="text" value="#{comprobanteNotaDebitoControlador.puntoEmision}" disabled="true" readonly="true" /> 
+	    					<p:commandButton oncomplete="puntosEmisionW.show()" icon ="ui-icon-circle-zoomin" actionListener="#{comprobanteNotaDebitoControlador.llenaPuntosEmision}" disabled="#{comprobanteNotaDebitoControlador.visibleBotonePuntoEmision}"
+	    					update=":formdialog:puntosEmisionId,:frm1:CabeceraDocumentoPanel,:frm1:InfoCompradorPanel,:frm1:InfoCompradorPanel,:frm1:InfoComprobanteventaModifica,:frm1:detallesAdicionalesPanel,:frm1:detalleDocumentoPanel" />
+							<h:outputText value="*" style="color: #FF0000;"/>
+						</h:panelGroup>	
+						
+						<h:outputText styleClass="label" value="Secuencial:" />
+						<h:outputText styleClass="text" value="#{comprobanteNotaDebitoControlador.secuencial}" />
+																		
+						<h:outputText styleClass="label" value="Tipo Documento:" />
+						<h:outputText styleClass="text" value="#{comprobanteNotaDebitoControlador.tipoDocumento}" />
+	         
+	         	        <h:outputText styleClass="label" value="Tipo Emisión:" />
+	         	        <h:panelGroup>
+							<p:selectOneMenu value="#{comprobanteNotaDebitoControlador.tipoEmision}" >
+							   	<f:selectItems value="#{comprobanteNotaDebitoControlador.litipoEmision}" />
+							   	<p:ajax event="change" value="#{comprobanteNotaDebitoControlador.tipoEmision}"   update=":frm1:CabeceraDocumentoPanel" />
+							</p:selectOneMenu>
+							<h:outputText value="*" style="color: #FF0000;"/>
+						</h:panelGroup>
+						
+						<h:outputText styleClass="label" value="Fecha de Emisión:"  />
+						<h:panelGroup>
+							<p:calendar value="#{comprobanteNotaDebitoControlador.fechaDeEmision}" id="popupCal" pattern="dd/MM/yyyy" />  
+							<h:outputText value="*" style="color: #FF0000;"/>
+						</h:panelGroup>
+					 </h:panelGrid>
+       			</p:panel>
+       			<p:panel id="InfoCompradorPanel" >
+				    <h:outputText styleClass="titulo"  value="INFORMACIóN DEL COMPRADOR" />
+				        <h:panelGrid columns="6" title="Informacion del Comprador" id="infoComprador">
+							<h:outputText styleClass="label"  value="Tipo Comprador:" />
+							<h:panelGroup>
+								<p:selectOneMenu value="#{comprobanteNotaDebitoControlador.tipoComprador}" id="cmbTipoComp" >
+								   	<f:selectItems value="#{comprobanteNotaDebitoControlador.tiposComprador}" />
+								   	<p:ajax event="change" value="#{comprobanteNotaDebitoControlador.tipoComprador}"   update=":frm1:cmbTipoComp,:frm1:iptIdentifComp" />						   							   	
+								</p:selectOneMenu>
+								<h:outputText value="*" style="color: #FF0000;"/>
+							</h:panelGroup>
+							
+							<h:outputText styleClass="label" value="Identificación del Comprador:"  />
+							<h:panelGroup>
+								<p:autoComplete value="#{comprobanteNotaDebitoControlador.identificacionDelComprador}" id="iptIdentifComp"  
+									completeMethod="#{comprobanteNotaDebitoControlador.complete_RucComprador(comprobanteNotaDebitoControlador.identificacionDelComprador)}" >
+									<p:ajax event="blur" listener="#{comprobanteNotaDebitoControlador.buscarComprador}"   update=":frm1:iptIdentifComp,:frm1:pnGDatosComp,:frm1:growl" />
+								</p:autoComplete>
+								<h:outputText value="*" style="color: #FF0000;"/>
+							</h:panelGroup>
+							
+							<h:panelGroup id="pnGDatosComp">
+								<h:outputText styleClass="label" value="Razón Social/Apellidos y Nombres:" />
+		                        <br />						
+								<h:inputText styleClass="text" value="#{comprobanteNotaDebitoControlador.razonSocial}" disabled="#{comprobanteNotaDebitoControlador.presenta}" size="60" />
+		                        <br /> 
+								<h:outputText styleClass="label" value="Dirección Establecimiento:" />
+		                        <br />						
+								<h:inputText styleClass="text" value="#{comprobanteNotaDebitoControlador.direccionEstablecimiento}" disabled="#{comprobanteNotaDebitoControlador.presenta}" size="60" />
+		                        <br />
+								<h:outputText styleClass="label" value="Correo Electrónico:" />
+		                        <br />						
+								<h:inputText  styleClass="text"  value="#{comprobanteNotaDebitoControlador.correoElectronico}" disabled="#{comprobanteNotaDebitoControlador.presenta}" size="60" />
+		                        <br />
+								<h:outputText styleClass="label" value="Teléfono:" />
+		                        <br />						
+								<h:inputText  styleClass="text" value="#{comprobanteNotaDebitoControlador.telefono}" disabled="#{comprobanteNotaDebitoControlador.presenta}" size="20" />
+		                   </h:panelGroup>						
+				         </h:panelGrid>
+				</p:panel>
+				<p:panel id="InfoComprobanteventaModifica">
+					<h:outputText styleClass="titulo"  value="COMPROBANTE DE VENTA QUE SE MODIFICA" />
+					<h:panelGrid columns="4" title="Comprobante de Venta que se Modifica" id="infoComproVentaModif" style="margin: 0 auto;">
+						<h:outputText styleClass="label"  value="Tipo de Documento:" />
+						<h:panelGroup>
+							<p:selectOneMenu value="#{comprobanteNotaDebitoControlador.tipoDocumentoModifi}"  >
+							   	<f:selectItems value="#{comprobanteNotaDebitoControlador.listaTipoDocumentoModif}" />						   							   	
+							</p:selectOneMenu>
+							<h:outputText value="*" style="color: #FF0000;"/>
+						</h:panelGroup>
+						
+						<h:outputText styleClass="label"  value="Fecha Emisión:" />
+						<h:panelGroup>
+							<p:calendar value="#{comprobanteNotaDebitoControlador.fechaDeEmisionModif}" pattern="dd/MM/yyyy"/>
+							<h:outputText value="*" style="color: #FF0000;"/>
+						</h:panelGroup>
+						
+						<h:outputText styleClass="label"  value="Nª Comprobante:" />
+						<h:panelGroup>
+							<p:inputMask styleClass="text" value="#{comprobanteNotaDebitoControlador.noComprobanteModif}" size="25" mask="999-999-999999999"  />	
+							<h:outputText value="*" style="color: #FF0000;"/>
+						</h:panelGroup>
+					</h:panelGrid>
+				</p:panel>
+				<p:panel id="detalleDocumentoPanel" >
+    				 <h:panelGrid columns="4" title="DETALLE" style="align:CENTER"> 
+    					 	<p:commandButton value="Detalle" icon="ui-icon-circle-plus"
+												action="#{comprobanteNotaDebitoControlador.nuevoDetalle('Documento')}" update=":frm1:dtDetalle,:frm1:growl"  /> 
+						    <p:commandButton value="Detalle Adicional" icon="ui-icon-circle-plus"
+												action="#{comprobanteNotaDebitoControlador.nuevoDetalle('Adicional')}" update=":frm1:detallesAdicionalesPanel,:frm1:growl"  /> 		
+									
+							<p:commandButton value="Guardar" icon="ui-icon-disk" oncomplete="confirmation.show()" update=":frm1:CabeceraDocumentoPanel,:frm1:InfoCompradorPanel,:frm1:InfoCompradorPanel,:frm1:InfoComprobanteventaModifica,:frm1:detallesAdicionalesPanel,:frm1:detalleDocumentoPanel"> 
+							</p:commandButton>
+    				 </h:panelGrid>
+    				 <p:dataTable id="dtDetalle"
+    				 			  value="#{comprobanteNotaDebitoControlador.listPantallaDetalleDocumento}"
+								  var="detalleDocumento"
+								  paginator="true" 
+								  binding="#{comprobanteNotaDebitoControlador.dataTableDetalle}"
+								  rows="10"  
+	                              paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+	                              rowsPerPageTemplate="5,10,15">
+    				 		<p:column>
+								<f:facet name="header">
+									<h:outputText value="Linea" />
+								</f:facet>
+								<h:outputText value="#{detalleDocumento.linea}" />
+							</p:column>
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Razón de la modificación"  />
+								</f:facet>
+								<h:inputText id="razonModificacion" styleClass="text" value="#{detalleDocumento.razon}"  requiredMessage="Razon de modificacion Requerido" required="true">
+									<p:ajax event="blur"  update=":frm1:detalleDocumentoPanel,:frm1:growl" />
+								</h:inputText>
+							</p:column>
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Valor Modificación"  />
+								</f:facet>
+								<h:inputText styleClass="text" style="text-align: right;" value="#{detalleDocumento.baseImponible}" requiredMessage="Cantidad Requerida" required="true" >
+								     <p:ajax event="change" listener="#{comprobanteNotaDebitoControlador.calculaTotal_producto('RealizandoCalculo')}"   update=":frm1:detalleDocumentoPanel,:frm1:growl" />
+								</h:inputText>
+							</p:column>
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Impuesto"  />
+								</f:facet>
+								<p:selectOneMenu value="#{detalleDocumento.cod_impuesto}" >
+							   		<f:selectItems value="#{comprobanteNotaDebitoControlador.listTipImpuesto}" />
+							   		<p:ajax event="change" listener="#{comprobanteNotaDebitoControlador.calculaTotal_producto('CambioCodImpuesto')}" value="#{comprobanteNotaDebitoControlador.listTipImpuesto}" 
+							   			update=":frm1:detalleDocumentoPanel" />						   							   	
+								</p:selectOneMenu>
+							</p:column>
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Codigo porcentaje" />
+								</f:facet>
+								<p:inputText styleClass="text" style="text-align: right;" value="#{detalleDocumento.cod_porcentaje}" disabled="true" />
+								<p:commandButton oncomplete="ProductosW.show()"  icon ="ui-icon-circle-zoomin" actionListener="#{comprobanteNotaDebitoControlador.calculaTotal_producto('llenartablaproducto')}" 
+									update=":formdialog:ProductosId,:frm1:detalleDocumentoPanel,:frm1:growl,:frm1:datosEmisorPanel,:frm1:CabeceraDocumentoPanel,:frm1:InfoCompradorPanel,:frm1:InfoComprobanteventaModifica,:frm1:detallesAdicionalesPanel">
+									<f:setPropertyActionListener value="#{detalleDocumento}" target="#{comprobanteNotaDebitoControlador.seleccionaDetalleDocumento}"/>  
+								</p:commandButton>
+							</p:column>
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Valor porcentaje"  />
+								</f:facet>
+								<h:outputText styleClass="text" value="#{detalleDocumento.valor_tarifa}"  />
+							</p:column>
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Valor Total"  />
+								</f:facet>
+								<h:outputText styleClass="text" value="#{detalleDocumento.valor}"  />
+							</p:column>
+							<p:column>
+                                 <f:facet name="header">
+                                     <h:outputText value="Acción" />
+                                 </f:facet>
+                                   <p:commandButton title="Borrar" icon="ui-icon-trash" action="#{comprobanteNotaDebitoControlador.BorrarLineaDetAdicional('Detalle')}" update=":frm1:detalleDocumentoPanel">
+                                   		<f:setPropertyActionListener value="#{detalleDocumento}" target="#{comprobanteNotaDebitoControlador.seleccionaDetalleDocumento}" />  
+                                   </p:commandButton>
+                            </p:column>
+    				 </p:dataTable>
+					<h:panelGroup style="text-align: right;  display: block;">
+						<h:outputText value="Subtotal Sin Impuesto:" styleClass="label"/>
+						<h:inputText value="#{comprobanteNotaDebitoControlador.subtotalSinImpuesto}" readonly="true"  style="text-align: right;"/>
+					</h:panelGroup>
+					
+					<h:panelGroup style="text-align: right;  display: block;">
+						<h:outputText value="Subtotal 12%:" styleClass="label"/>
+						<h:inputText value="#{comprobanteNotaDebitoControlador.subtotal12}" readonly="true"  style="text-align: right;"/>
+					</h:panelGroup>
+					
+					<h:panelGroup style="text-align: right;  display: block;">
+						<h:outputText value="Subtotal 0%:" styleClass="label"/>
+						<h:inputText value="#{comprobanteNotaDebitoControlador.subtotal0}" readonly="true"  style="text-align: right;"/>
+					</h:panelGroup>
+					
+					<h:panelGroup style="text-align: right;  display: block;">
+						<h:outputText value="Subtotal No Objeto de IVA:" styleClass="label"/>
+						<h:inputText value="#{comprobanteNotaDebitoControlador.subtotalNoIva}" readonly="true"  style="text-align: right;"/>
+					</h:panelGroup>
+					
+					<h:panelGroup style="text-align: right;  display: block;">
+						<h:outputText value="Valor ICE:" styleClass="label"/>
+						<h:inputText value="#{comprobanteNotaDebitoControlador.totalvalorICE}" readonly="true"  style="text-align: right;"/>
+					</h:panelGroup>
+					
+					<h:panelGroup style="text-align: right;  display: block;">
+						<h:outputText value="IVA 12%:" styleClass="label"/>
+						<h:inputText value="#{comprobanteNotaDebitoControlador.iva12}" readonly="true"  style="text-align: right;"/>
+					</h:panelGroup>
+					
+					<h:panelGroup style="text-align: right;  display: block;">
+						<h:outputText value="Valor Total:" styleClass="label"/>
+						<h:inputText value="#{comprobanteNotaDebitoControlador.valorTotalFactura}" readonly="true"  style="text-align: right;"/>
+					</h:panelGroup>
+					
+				</p:panel>
+				<p:panel id="detallesAdicionalesPanel" >					
+					<h:outputText styleClass="titulo" value="Detalles Adicionales" />
+					<p:dataTable id="dtDetalleAd"
+								 value="#{comprobanteNotaDebitoControlador.listPantallaDetalleAdicional}"
+								 var="detalleAdicional"
+								 paginator="true" 
+								 rows="10"
+				                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+				                 rowsPerPageTemplate="5,10,15">
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Nombre" />
+								</f:facet>
+								<h:inputText styleClass="text" value="#{detalleAdicional.nombre}"  requiredMessage="Nombre Requerido" required="true" style="width:100%" maxlength="300" />
+							</p:column>
+							<p:column>
+								<f:facet name="header">
+									<h:outputText value="Descripción" />
+								</f:facet>
+								<h:inputText styleClass="text" value="#{detalleAdicional.valor}"  requiredMessage="Valor Requerido" required="true" style="width:100%" maxlength="300" />									
+							</p:column>
+							<p:column>
+				                <f:facet name="header">
+				                    <h:outputText value="Acción" />
+				                </f:facet>
+				                <p:commandButton title="Borrar" action="#{comprobanteNotaDebitoControlador.BorrarLineaDetAdicional('Detalleadicional')}" update=":frm1:detallesAdicionalesPanel" icon="ui-icon-trash">
+				                	<f:setPropertyActionListener value="#{detalleAdicional}" target="#{comprobanteNotaDebitoControlador.detDocumentoUI}" />  
+				                </p:commandButton>
+				             </p:column>	
+					</p:dataTable>
+				</p:panel>  
+			</h:form>
+		</ui:define>
+		<ui:define name="dialogo">
+			<h:form id="formdialog">
+				 <p:dialog header="Establecimientos" widgetVar="establecimientosW"  id="establecimientoId" draggable="false" resizable="false" modal="true">
+			    	<p:panel>
+			    	 <p:dataTable id="EstablecimientoDT" emptyMessage="No se encuentra el registro filtrado" rows="10" paginator="true" var="estab" value="#{comprobanteNotaDebitoControlador.listEstablecimientos}" widgetVar="establecimientoTable" filteredValue="#{comprobanteNotaDebitoControlador.filtraEstablecimiento}">                      
+					      <p:column headerText="Codigo" sortBy="#{estab.id.codEstablecimiento}" filterBy="#{estab.id.codEstablecimiento}">
+									<h:outputText value="#{estab.id.codEstablecimiento}" />
+						  </p:column>
+					  	  <p:column headerText="Seleccionar">  
+			                  <p:commandButton icon="ui-icon-check" oncomplete="establecimientosW.hide()" action="#{comprobanteNotaDebitoControlador.ubicarValorEstablecimiento}" 
+			                  	 update=":frm1:CabeceraDocumentoPanel,:frm1:InfoCompradorPanel,:frm1:InfoCompradorPanel,:frm1:InfoComprobanteventaModifica,:frm1:detallesAdicionalesPanel,:frm1:detalleDocumentoPanel">
+			                  	<f:setPropertyActionListener value="#{estab}" target="#{comprobanteNotaDebitoControlador.verCamposEstablecimiento}" />  
+			                  </p:commandButton>  
+			              </p:column>  
+					  </p:dataTable>
+					</p:panel>  
+			     </p:dialog>
+				 <p:dialog header="PuntosEmision" widgetVar="puntosEmisionW" id="puntosEmisionId" draggable="false" resizable="false" modal="true">
+				    	<p:panel>
+				    	 <p:dataTable id="PuntosEmisionDT" emptyMessage="No se encuentra el registro filtrado" var="puntos" rows="10"  value="#{comprobanteNotaDebitoControlador.listPuntosEmision}"  widgetVar="puntosEmisionTable" filteredValue="#{comprobanteNotaDebitoControlador.filtraPuntosEmision}">                      
+						      <p:column headerText="Codigo" sortBy="#{puntos.id.codPuntEmision}" filterBy="#{puntos.id.codPuntEmision}">
+									<h:outputText value="#{puntos.id.codPuntEmision}" />
+							  </p:column>
+						  	  <p:column headerText="Seleccionar">  
+				                  <p:commandButton icon="ui-icon-check" oncomplete="puntosEmisionW.hide()" action="#{comprobanteNotaDebitoControlador.ubicarValorPuntoEmision}" 
+				                  update=":frm1:growl,:frm1:CabeceraDocumentoPanel,:frm1:InfoCompradorPanel,:frm1:InfoCompradorPanel,:frm1:InfoComprobanteventaModifica,:frm1:detallesAdicionalesPanel,:frm1:detalleDocumentoPanel" >
+				                  	<f:setPropertyActionListener value="#{puntos}" target="#{comprobanteNotaDebitoControlador.verCamposPE}" />  
+				                  </p:commandButton>  
+				              </p:column>  
+						  </p:dataTable>
+						 </p:panel>  
+				 </p:dialog>
+				 <p:dialog header="Productos" widgetVar="ProductosW"  id="ProductosId" draggable="false" resizable="false" modal="true">
+				   <p:panel>
+				    	 <p:dataTable id="ProductosDT" rows="10" emptyMessage="No se encuentra el registro filtrado" var="produ" value="#{comprobanteNotaDebitoControlador.tablaPorcentaje}" widgetVar="ProductoTable" filteredValue="#{comprobanteNotaDebitoControlador.filtraTablaPorcentaje}">                      
+						      <p:column headerText="Codigo" sortBy="#{produ.codUnico}" filterBy="#{produ.codUnico}">
+								 <h:outputText value="#{produ.codUnico}" />
+							  </p:column>
+						      <p:column headerText="Descripción" sortBy="#{produ.descripcion}" filterBy="#{produ.descripcion}">
+										<h:outputText value="#{produ.descripcion}" />
+							  </p:column>
+							  <p:column headerText="Porcentaje" sortBy="#{produ.porcentaje}" filterBy="#{produ.porcentaje}">
+										<h:outputText value="#{produ.porcentaje}" />
+							  </p:column>
+						  	  <p:column headerText="Seleccionar">  
+				                  <p:commandButton icon="ui-icon-check" oncomplete="ProductosW.hide()" action="#{comprobanteNotaDebitoControlador.calculaTotal_producto('PorcentajeSeleccionado')}" 
+				                  	update=":frm1:growl,:frm1:CabeceraDocumentoPanel,:frm1:InfoCompradorPanel,:frm1:InfoCompradorPanel,:frm1:InfoComprobanteventaModifica,:frm1:detallesAdicionalesPanel,:frm1:detalleDocumentoPanel">
+				                  	<f:setPropertyActionListener value="#{produ}" target="#{comprobanteNotaDebitoControlador.verCamposPorcentaje}" />  
+				                  </p:commandButton>  
+				              </p:column>   
+						  </p:dataTable>
+					</p:panel>  
+				 </p:dialog>
+			</h:form>
+			<p:dialog header="Mensaje de confirmacion"  widgetVar="confirmation" id="MensajConfirma" modal="true">
+		    	<p:panel id="blodialog">
+			    	<h:outputLabel value="Esta seguro que desea realizar los cambios?"/><br/>
+			    	<h:panelGroup style=" font-size: 1.1em;font-weight:400; display: block; text-align: center;padding: 10px;">
+				    	<p:commandButton value="Yes" icon="ui-icon-check" oncomplete="confirmation.hide(),bloquearPagina.hide()" onstart="bloquearPagina.show()" action="#{comprobanteNotaDebitoControlador.insertarNotaDebito('BotonAceptar')}" 
+				    		update=":frm1:growl,:frm1:CabeceraDocumentoPanel,:frm1:InfoCompradorPanel,:frm1:InfoCompradorPanel,:frm1:InfoComprobanteventaModifica,:frm1:detallesAdicionalesPanel,:frm1:detalleDocumentoPanel" />  
+					    <p:commandButton value="Not" icon="ui-icon-closethick" oncomplete="confirmation.hide()" update=":frm1:CabeceraDocumentoPanel,:frm1:InfoCompradorPanel,:frm1:InfoCompradorPanel,:frm1:InfoComprobanteventaModifica,:frm1:detallesAdicionalesPanel,:frm1:detalleDocumentoPanel" />    
+						<p:blockUI block="blodialog" widgetVar="bloquearPagina">  
+						       Guardando..<br />  
+							<p:graphicImage value="/imagenes/ajax-loader.gif"/>  
+						</p:blockUI>
+					</h:panelGroup>
+				</p:panel> 
+			</p:dialog>
+		</ui:define>
+	</ui:composition>
+</html>

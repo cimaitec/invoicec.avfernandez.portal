@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/templates/cimaTemplate.xhtml">
+	<ui:define name="tituloPagina"></ui:define>
+	<ui:define name="tituloFormulario">
+	</ui:define>
+	<ui:define name="contenido">
+		<h:form id="fmr">
+			<p:panel id="panel" header="AUTORES">
+				<p:dataTable id="tabla" border="1" style="text-align: center"
+					value="#{autorControlador.autores}" var="aut">
+					<p:column>
+						<f:facet name="header">
+							<h:outputText value="Id" />
+						</f:facet>
+						<h:outputText value="#{aut.codigo}" />
+					</p:column>
+					<p:column>
+						<f:facet name="header">
+							<h:outputText value="Nombre" />
+						</f:facet>
+						<h:outputText value="#{aut.nombre}" />
+					</p:column>
+					<p:column>
+						<f:facet name="header">
+							<h:outputText value="Apellido" />
+						</f:facet>
+						<h:outputText value="#{aut.apellido}" />
+					</p:column>
+					<p:column>
+						<f:facet name="header">
+							<h:outputText value="Nacionalidad" />
+						</f:facet>
+						<h:outputText value="#{aut.nacionalidad.nombre}" />
+					</p:column>
+					<p:column>
+						<p:commandButton value="Seleccionar" update=":fmr:panel">
+							<f:setPropertyActionListener target="#{autorControlador.autor}"
+								value="#{aut}" />
+
+							<f:setPropertyActionListener
+								target="#{autorControlador.nacElegida.id}"
+								value="#{aut.nacionalidad.id}" />
+						</p:commandButton>
+					</p:column>
+					<p:column>
+						<p:commandButton value="Eliminar"
+							action="#{autorControlador.eliminar}" update=":fmr:panel">
+							<f:setPropertyActionListener target="#{autorControlador.autor}"
+								value="#{aut}" />
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+
+			</p:panel>
+
+		</h:form>
+
+	</ui:define>
+
+	<ui:define name="autor">
+		<h:outputText value="Grupo 2 - Eduardo Coronel" />
+	</ui:define>
+
+	<ui:define name="dialogo">
+		<h:form id="frm2">
+			<p:dialog id="dialogo2" header="Mi Dialogo" widgetVar="dlg2">
+				<p:panel id="panel2" header="PANEL PRIME">
+					<p:growl autoUpdate="true" />
+					<h:panelGrid columns="2">
+						<h:outputText value="Código" />
+						<p:inputText required="true" requiredMessage="Ingrese el codigo"
+							id="txt_codigo" value="#{autorControlador.autor.codigo}" />
+						<h:outputText value="Nombre" />
+						<p:inputText required="false" requiredMessage="Ingrese el nombre"
+							id="txt_nombre" value="#{autorControlador.autor.nombre}" />
+						<h:outputText value="Apellido" />
+						<p:inputText required="false"
+							requiredMessage="Ingrese el apellido" id="txt_apellido"
+							value="#{autorControlador.autor.apellido}" />
+						<h:outputText value="Nacionalidad" />
+						<p:selectOneMenu value="#{autorControlador.nacElegida.id}">
+							<f:selectItems value="#{autorControlador.nacionalidades}"
+								var="nac" itemValue="#{nac.id}" itemLabel="#{nac.nombre}"></f:selectItems>
+						</p:selectOneMenu>
+					</h:panelGrid>
+					<p:commandButton value="Actualizar"
+						action="#{autorControlador.actualizar}" update="panel" />
+					<p:commandButton value="Insertar"
+						action="#{autorControlador.insertar}" update="panel" />
+				</p:panel>
+			</p:dialog>
+		</h:form>
+	</ui:define>
+
+</ui:composition>
+</html>
